@@ -1,0 +1,63 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "Inter";
+  src: url("./assets/fonts/Inter-Regular.ttf");
+}
+
+@font-face {
+  font-family: "Inter Medium";
+  src: url("./assets/fonts/Inter-Medium.ttf");
+}
+
+@font-face {
+  font-family: "Inter Bold";
+  src: url("./assets/fonts/Inter-Bold.ttf");
+}
+
+@font-face {
+  font-family: "Inter Thin";
+  src: url("./assets/fonts/Inter-Thin.ttf");
+}
+
+@font-face {
+  font-family: "Inter Extra Bold";
+  src: url("./assets/fonts/Inter-ExtraBold.ttf");
+}
+
+body {
+  font-family: "Inter";
+  background-color: #0d1117;
+  max-height: 100dvh;
+  height: 100dvh;
+  width: 100%;
+  color: #e6edf3;
+}
+
+#root{
+  height: 100%;
+  display: flex;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator{
+  background-color: #b0b0b0;
+  border-radius: 3px;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0px 1000px #535860 inset;
+}

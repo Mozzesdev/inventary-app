@@ -1,0 +1,4 @@
+export { onBeforeRender };
+
+const onBeforeRender = () => {
+};
