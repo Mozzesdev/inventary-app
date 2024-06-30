@@ -3,7 +3,7 @@ import compression from "compression";
 import { root } from "./root.js";
 import apiRouter from "./api/router.js";
 import cookieParser from "cookie-parser";
-import { NODE_ENV, PORT } from "./config.js";
+import { NODE_ENV } from "./config.js";
 import redis from "./redis/config.js";
 import { corsMiddleware } from "./middlewares/cors.middleware.js";
 import { userMiddleware } from "./middlewares/user.middleware.js";
@@ -37,12 +37,10 @@ app.use(cookieParser());
 app.use("/api", apiRouter);
 app.get("*", userMiddleware, renderMiddleware);
 
-app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
-});
-
 process.on("SIGINT", async () => {
   await redis.quit();
   console.log("Desconectado de Redis al cerrar la aplicación.");
   process.exit();
 });
+
+export default app;
