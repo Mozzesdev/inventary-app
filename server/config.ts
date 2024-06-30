@@ -10,5 +10,4 @@ export const {
   REDIS_PASSWORD,
   MAX_ATTEMPTS = 10,
   ATTEMPT_TIMEOUT = 180000,
-  STORAGE_TOKEN
 } = process.env;
