@@ -1,6 +1,6 @@
 export const {
   NODE_ENV = "development",
-  PORT = 3000,
+  VITE_PORT: PORT = 2000,
   BASE = "/",
   ABORT_DELAY = "1000",
   MYSQL_CONFIG,

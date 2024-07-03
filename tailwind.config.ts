@@ -1,17 +1,11 @@
-/** @type {import('tailwindcss').Config} */
+import type { Config } from "tailwindcss";
+
 export default {
-  content: ["./src/**/*.{js,ts,jsx,tsx}"],
+  content: ["./src/**/*.{html,js,ts,jsx,tsx}"],
   theme: {
     extend: {
       fontFamily: {
-        inter: [
-          '"Inter"',
-          {
-            fontFeatureSettings: '"cv11"',
-            fontVariationSettings: "normal",
-          },
-          "sans-serif",
-        ],
+        inter: ["Inter", "sans-serif"],
         "inter-medium": ['"Inter Medium"', "sans-serif"],
         "inter-bold": ['"Inter Bold"', "sans-serif"],
         "inter-extra-bold": ['"Inter Extra Bold"', "sans-serif"],
@@ -29,4 +23,4 @@ export default {
     },
   },
   plugins: [],
-};
+} satisfies Config;

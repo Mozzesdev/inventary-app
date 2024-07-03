@@ -1,6 +1,5 @@
 import type { Config } from "vike/types";
 import { ssrEffect } from "./ssrEffect.js";
-import config from '@vite-plugin-vercel/vike/config';
 
 import "../types/index.js";
 import { isNotFalse } from "../utils/isNotFalse.js";
@@ -9,7 +8,6 @@ import { onRenderClient } from "./onRenderClient.js";
 import { onBeforeRender } from "./onBeforeRender.js";
 
 export default {
-  extends: config,
   prerender: false,
   name: "vike-plugin",
   require: {

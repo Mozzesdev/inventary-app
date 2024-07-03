@@ -1,0 +1,9 @@
+// src/pages/(protected)/settings/security/+config.ts
+var config_default = {
+  title: "Security Settings | Inventary App",
+  location_label: "Security Settings"
+};
+export {
+  config_default as default
+};
+//# sourceMappingURL=data:application/json;base64,ewogICJ2ZXJzaW9uIjogMywKICAic291cmNlcyI6IFsiK2NvbmZpZy50cyJdLAogICJzb3VyY2VzQ29udGVudCI6IFsiaW1wb3J0IHR5cGUgeyBDb25maWcgfSBmcm9tICd2aWtlL3R5cGVzJ1xuXG5leHBvcnQgZGVmYXVsdCB7XG4gIHRpdGxlOiAnU2VjdXJpdHkgU2V0dGluZ3MgfCBJbnZlbnRhcnkgQXBwJyxcbiAgbG9jYXRpb25fbGFiZWw6IFwiU2VjdXJpdHkgU2V0dGluZ3NcIlxufSBzYXRpc2ZpZXMgQ29uZmlnIl0sCiAgIm1hcHBpbmdzIjogIjtBQUVBLElBQU8saUJBQVE7QUFBQSxFQUNiLE9BQU87QUFBQSxFQUNQLGdCQUFnQjtBQUNsQjsiLAogICJuYW1lcyI6IFtdCn0K

@@ -1,9 +1,6 @@
 import { Request, Response } from "express";
-import {
-  validateLocation,
-  validatePartialLocation,
-} from "../schemas/location.js";
 import { Model } from "../interface/model.js";
+import { validatePartialSupplier, validateSupplier } from "../schemas/supplier.js";
 
 export class SuppliersController {
   model: Model;
@@ -18,7 +15,7 @@ export class SuppliersController {
   };
 
   create = async (req: Request, res: Response) => {
-    const validated = validateLocation(req.body);
+    const validated = validateSupplier(req.body);
 
     if (!validated.success)
       return res
@@ -44,7 +41,7 @@ export class SuppliersController {
   };
 
   update = async (req: Request, res: Response) => {
-    const validated = validatePartialLocation(req.body);
+    const validated = validatePartialSupplier(req.body);
 
     if (!validated.success)
       return res

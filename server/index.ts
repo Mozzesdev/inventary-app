@@ -35,17 +35,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
 app.use("/api", apiRouter);
-app.get("*", userMiddleware, renderMiddleware);
+app.all("*", userMiddleware, renderMiddleware);
 
 process.on("SIGINT", async () => {
   await redis.quit();
-  console.log("Desconectado de Redis al cerrar la aplicación.");
   process.exit();
 });
 
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
-
-
-export default app;

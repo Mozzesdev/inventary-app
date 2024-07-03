@@ -25,6 +25,7 @@ const renderMiddleware = async (
   headers.forEach(([name, value]) => res.setHeader(name, value));
 
   res.status(statusCode);
+
   httpResponse.pipe(res);
 };
 

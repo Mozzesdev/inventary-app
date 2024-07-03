@@ -51,6 +51,7 @@ const onRenderHtml: OnRenderHtmlAsync = async (
       pageView = await renderToStream(page, {
         userAgent: pageContext.headers?.["user-agent"] || pageContext.userAgent,
         disable,
+        webStream: typeof stream === 'string' ? stream === 'web' : undefined,
       });
     }
   }
