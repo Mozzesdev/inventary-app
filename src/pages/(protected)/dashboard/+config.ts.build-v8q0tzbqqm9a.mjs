@@ -1,9 +1,0 @@
-// src/pages/(protected)/dashboard/+config.ts
-var config_default = {
-  title: "Dashboard | Inventary",
-  location_label: "Dashboard"
-};
-export {
-  config_default as default
-};
-//# sourceMappingURL=data:application/json;base64,ewogICJ2ZXJzaW9uIjogMywKICAic291cmNlcyI6IFsiK2NvbmZpZy50cyJdLAogICJzb3VyY2VzQ29udGVudCI6IFsiaW1wb3J0IHR5cGUgeyBDb25maWcgfSBmcm9tIFwidmlrZS90eXBlc1wiO1xuXG5leHBvcnQgZGVmYXVsdCB7XG4gIHRpdGxlOiBcIkRhc2hib2FyZCB8IEludmVudGFyeVwiLFxuICBsb2NhdGlvbl9sYWJlbDogXCJEYXNoYm9hcmRcIixcbn0gc2F0aXNmaWVzIENvbmZpZztcbiJdLAogICJtYXBwaW5ncyI6ICI7QUFFQSxJQUFPLGlCQUFRO0FBQUEsRUFDYixPQUFPO0FBQUEsRUFDUCxnQkFBZ0I7QUFDbEI7IiwKICAibmFtZXMiOiBbXQp9Cg==
