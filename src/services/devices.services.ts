@@ -10,7 +10,7 @@ export const getDevices = async ({
   ...props
 }: FetchDevicesProps): Promise<AxiosResponse<FetchDevices>> => {
   return await axiosInstance.get<FetchDevices>(
-    `devices?page=${page}&perPage=${perPage}${
+    `/devices?page=${page}&perPage=${perPage}${
       props.query ? "&query=" + props.query : ""
     }`
   );
@@ -19,15 +19,15 @@ export const getDevices = async ({
 export const createDevice = async (
   data: Device
 ): Promise<AxiosResponse<any>> => {
-  return await axiosInstance.post("devices", data);
+  return await axiosInstance.post("/devices", data);
 };
 
 export const editDevice = async (data: Device): Promise<AxiosResponse<any>> => {
-  return await axiosInstance.patch(`devices/${data.id}`, data);
+  return await axiosInstance.patch(`/devices/${data.id}`, data);
 };
 
 export const deleteDevice = async (id: string): Promise<AxiosResponse<any>> => {
-  return await axiosInstance.delete(`devices/${id}`);
+  return await axiosInstance.delete(`/devices/${id}`);
 };
 
 export const getDevicesColumns = (): ColumnTable[] => [

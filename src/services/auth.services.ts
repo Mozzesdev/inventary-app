@@ -4,31 +4,31 @@ import axiosInstance from "../interceptor";
 export const loginUser = (
   body: AuthValues
 ): Promise<AxiosResponse<LoginResponse>> => {
-  return axiosInstance.post<LoginResponse>("user/login", body);
+  return axiosInstance.post<LoginResponse>("/user/login", body);
 };
 
 export const logoutUser = () => {
-  return axiosInstance.post("user/logout");
+  return axiosInstance.post("/user/logout");
 };
 
 export const changePassword = (body: PasswordBody) => {
-  return axiosInstance.post(`user/change-password/${body.id}`, body);
+  return axiosInstance.post(`/user/change-password/${body.id}`, body);
 };
 
 export const enable2fa = (body: { id: string }) => {
-  return axiosInstance.post("user/enable-2fa", body);
+  return axiosInstance.post("/user/enable-2fa", body);
 };
 
 export const disable2fa = (body: any) => {
-  return axiosInstance.patch(`user/${body.id}`, body);
+  return axiosInstance.patch(`/user/${body.id}`, body);
 };
 
 export const getUserById = (id: string) => {
-  return axiosInstance.get(`user/${id}`);
+  return axiosInstance.get(`/user/${id}`);
 };
 
 export const verify2fa = (body: { id: string; token_2fa: string }) => {
-  return axiosInstance.post("user/verify-2fa", body);
+  return axiosInstance.post("/user/verify-2fa", body);
 };
 
 interface AuthValues {

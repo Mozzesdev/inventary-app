@@ -6,7 +6,7 @@ import axios, {
 import { navigate } from "vike/client/router";
 
 const axiosInstance = axios.create({
-  baseURL: "/api/",
+  baseURL: "/api",
   withCredentials: true,
 });
 

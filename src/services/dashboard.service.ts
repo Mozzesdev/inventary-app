@@ -3,11 +3,11 @@ import axiosInstance from "../interceptor";
 import { ColumnTable } from "../interfaces/tables";
 
 export const getVergeExpireDevices = async (): Promise<AxiosResponse<any>> => {
-  return await axiosInstance.get("dashboard/devices");
+  return await axiosInstance.get("/dashboard/devices");
 };
 
 export const getCounters = async (): Promise<AxiosResponse<any>> => {
-  return await axiosInstance.get("dashboard/counters");
+  return await axiosInstance.get("/dashboard/counters");
 };
 
 export const getDevicesColumns = (): ColumnTable[] => [

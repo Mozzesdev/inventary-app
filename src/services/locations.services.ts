@@ -10,7 +10,7 @@ export const getLocations = async ({
   ...props
 }: FetchLocationProps = {}): Promise<AxiosResponse<FetchLocation>> => {
   return await axiosInstance.get<FetchLocation>(
-    `location?page=${page}&perPage=${perPage}${
+    `/location?page=${page}&perPage=${perPage}${
       props.query ? "&query=" + props.query : ""
     }`
   );
@@ -19,19 +19,19 @@ export const getLocations = async ({
 export const createLocation = async (
   data: Location
 ): Promise<AxiosResponse<any>> => {
-  return await axiosInstance.post("location", data);
+  return await axiosInstance.post("/location", data);
 };
 
 export const editLocation = async (
   data: Location
 ): Promise<AxiosResponse<any>> => {
-  return await axiosInstance.patch(`location/${data.id}`, data);
+  return await axiosInstance.patch(`/location/${data.id}`, data);
 };
 
 export const deleteLocation = async (
   id: string
 ): Promise<AxiosResponse<any>> => {
-  return await axiosInstance.delete(`location/${id}`);
+  return await axiosInstance.delete(`/location/${id}`);
 };
 
 export const getLocationColumns = (): ColumnTable[] => [

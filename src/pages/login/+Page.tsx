@@ -7,6 +7,7 @@ import { navigate } from "vike/client/router";
 import TwoFactorDialog from "./TwoFactorDialog";
 import { useState } from "react";
 import { useAlert } from "../../hooks/useAlert";
+import React from "react";
 
 interface AuthValues {
   email: string;
@@ -28,7 +29,18 @@ const Page = () => {
   ) => {
     try {
       setSubmitting(true);
-      const { data } = await loginUser(values);
+      // const { data } = await loginUser(values);
+      const req = await fetch("/api/user/login", {
+        body: JSON.stringify(values),
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const data = await req.json();
+
+      console.log(data);
 
       if (data.data["2fa_required"]) {
         setTwoFactor(true);

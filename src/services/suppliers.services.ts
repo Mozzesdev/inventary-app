@@ -10,7 +10,7 @@ export const getSuppliers = async ({
   ...props
 }: FetchSuppliersProps = {}): Promise<AxiosResponse<FetchSuppliers>> => {
   return await axiosInstance.get<FetchSuppliers>(
-    `suppliers?page=${page}&perPage=${perPage}${
+    `/suppliers?page=${page}&perPage=${perPage}${
       props.query ? "&query=" + props.query : ""
     }`
   );
@@ -19,19 +19,19 @@ export const getSuppliers = async ({
 export const createSupplier = async (
   data: Supplier
 ): Promise<AxiosResponse<any>> => {
-  return await axiosInstance.post("suppliers", data);
+  return await axiosInstance.post("/suppliers", data);
 };
 
 export const editSupplier = async (
   data: Supplier
 ): Promise<AxiosResponse<any>> => {
-  return await axiosInstance.patch(`suppliers/${data.id}`, data);
+  return await axiosInstance.patch(`/suppliers/${data.id}`, data);
 };
 
 export const deleteSupplier = async (
   id: string
 ): Promise<AxiosResponse<any>> => {
-  return await axiosInstance.delete(`suppliers/${id}`);
+  return await axiosInstance.delete(`/suppliers/${id}`);
 };
 
 export const getSuppliersColumns = (): ColumnTable[] => [

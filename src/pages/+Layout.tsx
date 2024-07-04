@@ -4,6 +4,7 @@ import AlertsProvider from "../hooks/AlertsProvider";
 import DropdownProvider from "../hooks/DropdownProvider";
 import { usePageContext } from "vike-react/usePageContext";
 import "./index.css";
+import React from "react";
 
 const Layout = ({ children }: { children: ReactNode }) => {
   const context = usePageContext();
