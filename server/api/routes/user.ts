@@ -9,7 +9,7 @@ export const createUsersRouter: ({ model }: any) => Router = ({
 
   const userController = new UserController({ model });
 
-  userRouter.get("/", authenticateToken, userController.getAll);
+  userRouter.get("/", userController.getAll);
 
   userRouter.post("/register", authenticateToken, userController.create);
 

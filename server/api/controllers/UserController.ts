@@ -16,8 +16,8 @@ export class UserController {
 
   getAll = async (req: Request, res: Response) => {
     const { name } = req.query;
-    const result = await this.model.getAll({ name });
-    res.status(201).json(result);
+    const { statusCode, ...result } = await this.model.getAll({ name });
+    res.status(statusCode).json(result);
   };
 
   create = async (req: Request, res: Response) => {
@@ -71,7 +71,6 @@ export class UserController {
       return res
         .status(400)
         .json({ error: JSON.parse(validated.error.message) });
-    console.log(validated.data);
 
     const {
       status,

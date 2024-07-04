@@ -37,10 +37,10 @@ class UserModel {
         two_factor,
       }));
 
-      return { success: true, data: filteredUsers };
+      return { success: true, data: filteredUsers, message: "Success", statusCode: 200 };
     } catch (error) {
       console.error("Error fetching users:", error);
-      return { success: false, message: "Error fetching locations" };
+      return { success: false, message: "Error fetching locations", statusCode: 500 };
     }
   }
 
