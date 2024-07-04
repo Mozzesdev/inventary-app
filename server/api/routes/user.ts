@@ -9,7 +9,7 @@ export const createUsersRouter: ({ model }: any) => Router = ({
 
   const userController = new UserController({ model });
 
-  userRouter.get("/", userController.getAll);
+  userRouter.get("/", authenticateToken, userController.getAll);
 
   userRouter.post("/register", authenticateToken, userController.create);
 
@@ -19,11 +19,7 @@ export const createUsersRouter: ({ model }: any) => Router = ({
 
   userRouter.patch("/:id", authenticateToken, userController.update);
 
-  userRouter.post("/login", (req, res) => {
-    console.log(req.body);
-    res.status(200);
-    res.send("Hola");
-  });
+  userRouter.post("/login", userController.login);
 
   userRouter.post("/logout", authenticateToken, userController.logout);
 

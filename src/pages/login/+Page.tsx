@@ -29,18 +29,7 @@ const Page = () => {
   ) => {
     try {
       setSubmitting(true);
-      // const { data } = await loginUser(values);
-      const req = await fetch("/api/user/login", {
-        body: JSON.stringify(values),
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      const data = await req.json();
-
-      console.log(data);
+      const { data } = await loginUser(values);
 
       if (data.data["2fa_required"]) {
         setTwoFactor(true);
