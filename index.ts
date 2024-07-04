@@ -1,13 +1,13 @@
 import express from "express";
 import compression from "compression";
-import { root } from "./root.js";
-import apiRouter from "./api/router.js";
+import { root } from "./server/root.js";
+import apiRouter from "./server/api/router.js";
 import cookieParser from "cookie-parser";
-import { NODE_ENV, PORT } from "./config.js";
-import redis from "./redis/config.js";
-import { corsMiddleware } from "./middlewares/cors.middleware.js";
-import { userMiddleware } from "./middlewares/user.middleware.js";
-import renderMiddleware from "./middlewares/render.middleware.js";
+import { NODE_ENV, PORT } from "./server/config.js";
+import redis from "./server/redis/config.js";
+import { corsMiddleware } from "./server/middlewares/cors.middleware.js";
+import { userMiddleware } from "./server/middlewares/user.middleware.js";
+import renderMiddleware from "./server/middlewares/render.middleware.js";
 
 const app = express();
 app.disable("x-powered-by");

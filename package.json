@@ -1,8 +1,8 @@
 {
   "scripts": {
-    "dev": "node --env-file=.env.development --import=tsx ./server/index.ts",
+    "dev": "node --env-file=.env.development --import=tsx ./index.ts",
     "build": "vite build",
-    "preview": "node --env-file=.env.production --import=tsx ./server/index.ts",
+    "preview": "node --env-file=.env.production --import=tsx ./index.ts",
     "lint": "eslint . --max-warnings 0"
   },
   "dependencies": {

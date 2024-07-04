@@ -6,8 +6,10 @@ import { isNotFalse } from "../utils/isNotFalse.js";
 import { onRenderHtml } from "./onRenderHtml.js";
 import { onRenderClient } from "./onRenderClient.js";
 import { onBeforeRender } from "./onBeforeRender.js";
+import config from "@vite-plugin-vercel/vike/config";
 
 export default {
+  extends: config,
   prerender: false,
   name: "vike-plugin",
   require: {
@@ -16,9 +18,9 @@ export default {
   onRenderHtml: onRenderHtml,
   onRenderClient: onRenderClient,
   onBeforeRender: onBeforeRender,
-  passToClient: [
-    process.env.NODE_ENV !== "production" && "$$typeof",
-  ].filter(isNotFalse),
+  passToClient: [process.env.NODE_ENV !== "production" && "$$typeof"].filter(
+    isNotFalse
+  ),
   clientRouting: true,
   hydrationCanBeAborted: true,
   title: "Test Vike Streaming",
