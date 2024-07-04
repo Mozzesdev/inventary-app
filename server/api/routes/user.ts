@@ -19,7 +19,11 @@ export const createUsersRouter: ({ model }: any) => Router = ({
 
   userRouter.patch("/:id", authenticateToken, userController.update);
 
-  userRouter.post("/login", userController.login);
+  userRouter.post("/login", (req, res) => {
+    console.log(req.body);
+    res.status(200);
+    res.send("Hola");
+  });
 
   userRouter.post("/logout", authenticateToken, userController.logout);
 

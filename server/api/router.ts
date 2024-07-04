@@ -28,7 +28,7 @@ const dashboardRouter = createDashboardRouter({ model: DashboardModel });
 apiRouter.use(compression());
 apiRouter.use(express.urlencoded({ extended: true }));
 apiRouter.use(express.json());
-apiRouter.use(morgan("combined"));
+apiRouter.use(morgan("dev"));
 
 apiRouter.get("/", (_req, res) => {
   res.redirect("/");
