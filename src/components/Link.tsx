@@ -1,6 +1,6 @@
 export { Link };
 
-import { usePageContext } from "../../hooks/usePageContext";
+  import { usePageContext } from "vike-react/usePageContext";
 import { classNames } from "../../utils/classNames";
 
 interface LinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {

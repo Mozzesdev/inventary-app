@@ -1,5 +1,5 @@
 import { ReactNode, useState } from "react";
-import { classNames } from "../../utils";
+import { classNames } from "../../utils/classNames";
 
 const Textarea = ({
   children,

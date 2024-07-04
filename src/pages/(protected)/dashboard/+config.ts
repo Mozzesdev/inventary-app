@@ -1,4 +1,4 @@
-import type { Config } from "vike/types";
+import { Config } from "vike/types";
 
 export default {
   title: "Dashboard | Inventary",

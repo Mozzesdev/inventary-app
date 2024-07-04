@@ -15,11 +15,11 @@ import {
   disable2fa,
   enable2fa,
 } from "../../../../services/auth.services";
-import { useAlert } from "../../../../../hooks/useAlert";
 import { useState } from "react";
 import Setup2faDialog from "./Setup2faDialog";
-import { useAuth } from "../../../../../hooks/useAuth";
 import Spinner from "../../../../components/Spinner";
+import { useAlert } from "../../../../hooks/useAlert";
+import { useAuth } from "../../../../hooks/useAuth";
 
 const Page = () => {
   const { user, loading, fetchUser }: any = useAuth();

@@ -5,8 +5,8 @@ import {
   useEffect,
   useState,
 } from "react";
-import { User } from "../server/api/interface/user";
-import { getUserById } from "../src/services/auth.services";
+import { User } from "../../server/api/interface/user";
+import { getUserById } from "../services/auth.services";
 
 export const AuthContext = createContext<{
   user: User;

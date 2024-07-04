@@ -1,6 +1,6 @@
 import TableRow from "./TableRow";
 import { ColumnTable } from "../interfaces/tables";
-import noDataImg from "../../renderer/assets/no-data.svg";
+import noDataImg from "../assets/no-data.svg";
 
 const Table = ({
   columns = [],

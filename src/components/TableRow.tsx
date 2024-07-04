@@ -1,4 +1,4 @@
-import { useDropdown } from "../../hooks/DropdownProvider";
+import { useDropdown } from "../hooks/DropdownProvider";
 
 const TableRow = ({ rowData, options = [] }: any) => {
   const dropdownContext = useDropdown();

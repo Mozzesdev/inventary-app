@@ -1,18 +1,19 @@
-import { usePageContext } from "../../../hooks/usePageContext";
+import { usePageContext } from "vike-react/usePageContext";
 
-export { Page };
-
-function Page() {
-  const pageContext = usePageContext();
-  let { abortReason } = pageContext;
-  if (!abortReason) {
-    abortReason = pageContext.is404
-      ? "Page not found."
-      : "Something went wrong.";
+export default function Page() {
+  const { is404 } = usePageContext();
+  if (is404) {
+    return (
+      <>
+        <h1>404 Page Not Found</h1>
+        <p>This page could not be found.</p>
+      </>
+    );
   }
   return (
-    <div className="w-full min-h-screen grid place-items-center bg-neutral-900 text-neutral-400 text-4xl font-inter-bold">
-      <p style={{ fontSize: "1.3em" }}>{abortReason}</p>
-    </div>
+    <>
+      <h1>500 Internal Server Error</h1>
+      <p>Something went wrong.</p>
+    </>
   );
 }

@@ -8,7 +8,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { classNames } from "../utils/classNames";
+import { classNames } from "../../utils/classNames";
 
 interface DropdownContextType {
   open: boolean;

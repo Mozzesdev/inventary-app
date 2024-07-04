@@ -1,4 +1,4 @@
-import logo from "../../renderer/assets/logo.png";
+import logo from "../assets/logo.png";
 import {
   BuildingOffice2Icon,
   ChevronRightIcon,

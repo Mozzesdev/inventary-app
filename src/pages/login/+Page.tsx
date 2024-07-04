@@ -1,4 +1,4 @@
-import logo from "../../../renderer/assets/logo.png";
+import logo from "../../assets/logo.png";
 import Input from "../../components/Input";
 import { Form, Formik, FormikHelpers } from "formik";
 import * as Yup from "yup";
@@ -6,7 +6,7 @@ import { loginUser } from "../../services/auth.services";
 import { navigate } from "vike/client/router";
 import TwoFactorDialog from "./TwoFactorDialog";
 import { useState } from "react";
-import { useAlert } from "../../../hooks/useAlert";
+import { useAlert } from "../../hooks/useAlert";
 
 interface AuthValues {
   email: string;

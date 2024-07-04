@@ -15,7 +15,8 @@
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "types": ["vite/client"],
     "jsx": "preserve",
-    "jsxImportSource": "react"
+    "jsxImportSource": "react",
+    "noImplicitAny": false
   },
   "exclude": ["dist"]
 }

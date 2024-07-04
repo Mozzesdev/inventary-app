@@ -1,7 +1,7 @@
 import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 import { File } from "../interfaces/files";
 import { DocumentIcon } from "@heroicons/react/24/solid";
-import { useDropdown } from "../../hooks/DropdownProvider";
+import { useDropdown } from "../hooks/DropdownProvider";
 
 const FilePreview = ({
   file,

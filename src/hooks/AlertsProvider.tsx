@@ -1,6 +1,6 @@
 import { createContext, ReactNode, useState } from "react";
-import Alert from "../src/components/Alert";
-import AlertsWrapper from "../src/components/AlertsWrapper";
+import AlertsWrapper from "../components/AlertsWrapper";
+import Alert from "../components/Alert";
 
 export interface AlertType {
   alerts: any[];

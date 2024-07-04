@@ -16,7 +16,7 @@ import Table from "../../../components/Table";
 import { Location } from "../../../interfaces/location";
 import FilesModal from "../../../components/FilesModal";
 import Pagination from "../../../components/Pagination";
-import { useAlert } from "../../../../hooks/useAlert";
+import { useAlert } from "../../../hooks/useAlert";
 
 const Page = () => {
   const [locationModal, setLocationModal] = useState(false);

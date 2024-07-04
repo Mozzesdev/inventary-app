@@ -1,3 +1,6 @@
+import vikeReact from "vike-react/config";
+import type { Config } from "vike/types";
+
 export default {
   passToClient: ["user"],
   meta: {
@@ -5,7 +8,9 @@ export default {
       env: { server: true, client: true },
     },
   },
-};
+  prerender: false,
+  extends: [vikeReact],
+} satisfies Config;
 
 declare global {
   namespace Vike {

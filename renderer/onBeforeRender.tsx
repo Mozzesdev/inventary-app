@@ -1,4 +1,0 @@
-export { onBeforeRender };
-
-const onBeforeRender = () => {
-};

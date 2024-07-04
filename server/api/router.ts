@@ -10,8 +10,10 @@ import redis from "../redis/config.js";
 import { createFilesRouter } from "./routes/files.js";
 import { createDeviceRouter } from "./routes/device.js";
 import deviceModel from "./models/mysql/device.js";
+import express from "express";
 import { createDashboardRouter } from "./routes/dashboard.js";
 import DashboardModel from "./models/mysql/dashboard.js";
+import compression from "compression";
 
 const apiRouter: Router = Router();
 
@@ -21,6 +23,10 @@ const suppliersRouter = createSuppliersRouter({ model: supplierModel });
 const filesRouter = createFilesRouter();
 const deviceRouter = createDeviceRouter({ model: deviceModel });
 const dashboardRouter = createDashboardRouter({ model: DashboardModel });
+
+apiRouter.use(compression());
+apiRouter.use(express.urlencoded({ extended: true }));
+apiRouter.use(express.json());
 
 apiRouter.get("/", (_req, res) => {
   res.redirect("/");

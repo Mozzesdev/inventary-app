@@ -1,8 +1,9 @@
 import { ReactNode } from "react";
-import AlertsProvider from "../../hooks/AlertsProvider";
-import { AuthProvider } from "../../hooks/AuthProvider";
-import { usePageContext } from "../../hooks/usePageContext";
-import DropdownProvider from "../../hooks/DropdownProvider";
+import { AuthProvider } from "../hooks/AuthProvider";
+import AlertsProvider from "../hooks/AlertsProvider";
+import DropdownProvider from "../hooks/DropdownProvider";
+import { usePageContext } from "vike-react/usePageContext";
+import "./index.css";
 
 const Layout = ({ children }: { children: ReactNode }) => {
   const context = usePageContext();

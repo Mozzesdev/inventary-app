@@ -5,7 +5,7 @@ import { Form, Formik } from "formik";
 import Button from "../../components/Button";
 import { verify2fa } from "../../services/auth.services";
 import { navigate } from "vike/client/router";
-import { useAlert } from "../../../hooks/useAlert";
+import { useAlert } from "../../hooks/useAlert";
 
 const TwoFactorDialog = ({ show, hide, user }: any) => {
   const { addAlert } = useAlert();

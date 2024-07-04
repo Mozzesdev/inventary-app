@@ -10,7 +10,7 @@ import { createDevice, editDevice } from "../../../services/devices.services";
 import { Device } from "../../../interfaces/device";
 import Select from "../../../components/Select";
 import Checkbox from "../../../components/Checkbox";
-import { useAlert } from "../../../../hooks/useAlert";
+import { useAlert } from "../../../hooks/useAlert";
 
 const DeviceModal = ({
   deviceModal,

@@ -3,9 +3,9 @@ import Dialog from "../../../../components/Dialog";
 import Input from "../../../../components/Input";
 import Button from "../../../../components/Button";
 import { verify2fa } from "../../../../services/auth.services";
-import { useAlert } from "../../../../../hooks/useAlert";
 import Spinner from "../../../../components/Spinner";
-import { useAuth } from "../../../../../hooks/useAuth";
+import { useAlert } from "../../../../hooks/useAlert";
+import { useAuth } from "../../../../hooks/useAuth";
 
 const Setup2faDialog = ({ dialog, close, user }: any) => {
   const { addAlert } = useAlert();

@@ -1,5 +1,4 @@
 import express from "express";
-import compression from "compression";
 import apiRouter from "./server/api/router.js";
 import cookieParser from "cookie-parser";
 import { NODE_ENV, PORT } from "./server/config.js";
@@ -18,8 +17,6 @@ const app = express();
 app.disable("x-powered-by");
 app.use(corsMiddleware());
 
-app.use(compression());
-
 const isProduction = NODE_ENV === "production";
 
 if (isProduction) {
@@ -36,8 +33,6 @@ if (isProduction) {
   app.use(viteDevMiddleware);
 }
 
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
 app.use(cookieParser());
 app.use("/api", apiRouter);
 app.all("*", userMiddleware, renderMiddleware);
