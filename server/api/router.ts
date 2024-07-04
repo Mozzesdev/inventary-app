@@ -12,6 +12,7 @@ import { createDashboardRouter } from "./routes/dashboard.js";
 import DashboardModel from "./models/mysql/dashboard.js";
 import compression from "compression";
 import userModel from "./models/mysql/users.js";
+import morgan from "morgan";
 
 const apiRouter: Router = Router();
 
@@ -27,6 +28,7 @@ const dashboardRouter = createDashboardRouter({ model: DashboardModel });
 apiRouter.use(compression());
 apiRouter.use(express.urlencoded({ extended: true }));
 apiRouter.use(express.json());
+apiRouter.use(morgan("combined"));
 
 apiRouter.get("/", (_req, res) => {
   res.redirect("/");
