@@ -1,8 +1,8 @@
 import { initializeApp, cert, ServiceAccount } from "firebase-admin/app";
 import { getStorage } from "firebase-admin/storage";
-import { readJSON } from "../utils.js";
+import { FIREBASE_KEY } from "../../config.js";
 
-const serviceAccount = readJSON("./firebase/serviceAccountKey.json");
+const serviceAccount = JSON.parse(FIREBASE_KEY ?? "");
 
 export const firebaseApp = initializeApp({
   credential: cert(serviceAccount as ServiceAccount),

@@ -5,17 +5,15 @@ import {
   validatePasswordChange,
   validateUser,
 } from "../schemas/user.js";
-import { ATTEMPT_TIMEOUT, NODE_ENV } from "../../config.js";
-import { RedisClientType } from "redis";
+import { NODE_ENV } from "../../config.js";
 
 export class UserController {
   model: Model | any;
-  redis: RedisClientType;
 
-  constructor({ model, redis }: any) {
+  constructor({ model }: any) {
     this.model = model;
-    this.redis = redis;
   }
+
   getAll = async (req: Request, res: Response) => {
     const { name } = req.query;
     const result = await this.model.getAll({ name });
@@ -89,11 +87,6 @@ export class UserController {
       return res.send({ message, success, status });
     }
 
-    await this.redis.set(`${user.id}:attempts`, 0, {
-      EX: +ATTEMPT_TIMEOUT,
-      NX: true,
-    });
-
     if (user.two_factor) {
       return res.send({
         data: {
@@ -125,7 +118,6 @@ export class UserController {
 
     const { message, success, statusCode, data } = await this.model.enable2fa({
       id,
-      redis: this.redis,
     });
 
     res.status(statusCode).send({ message, success, data });
@@ -137,7 +129,6 @@ export class UserController {
     const { message, success, statusCode, data } = await this.model.verify2fa({
       id,
       token_2fa,
-      redis: this.redis,
     });
 
     if (data?.token) {

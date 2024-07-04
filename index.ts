@@ -1,27 +1,26 @@
 import express from "express";
-import apiRouter from "./server/api/router.js";
 import cookieParser from "cookie-parser";
-import { NODE_ENV, PORT } from "./server/config.js";
+import { PORT } from "./server/config.js";
 import redis from "./server/redis/config.js";
 import { corsMiddleware } from "./server/middlewares/cors.middleware.js";
 import { userMiddleware } from "./server/middlewares/user.middleware.js";
 import renderMiddleware from "./server/middlewares/render.middleware.js";
 import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
+import apiRouter from "./server/api/router.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const root = __dirname;
 
 const app = express();
+
 app.disable("x-powered-by");
 app.use(corsMiddleware());
+app.use(cookieParser());
 
-const isProduction = NODE_ENV === "production";
-
-if (isProduction) {
-  const sirv = (await import("sirv")).default;
-  app.use(sirv(`${root}/dist/client`));
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(`${root}/dist/client`));
 } else {
   const vite = await import("vite");
   const viteDevMiddleware = (
@@ -33,7 +32,6 @@ if (isProduction) {
   app.use(viteDevMiddleware);
 }
 
-app.use(cookieParser());
 app.use("/api", apiRouter);
 app.all("*", userMiddleware, renderMiddleware);
 
@@ -45,3 +43,5 @@ process.on("SIGINT", async () => {
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
 });
+
+export default app;

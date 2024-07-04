@@ -1,24 +1,24 @@
-import { Router } from "express";
+import express, { Router } from "express";
 import { createLocationRouter } from "./routes/location.js";
 import { createUsersRouter } from "./routes/user.js";
 import { createSuppliersRouter } from "./routes/suppliers.js";
 import locationModel from "./models/mysql/locations.js";
-import userModel from "./models/mysql/users.js";
 import supplierModel from "./models/mysql/suppliers.js";
 import { authenticateToken } from "../middlewares/auth.middleware.js";
-import redis from "../redis/config.js";
 import { createFilesRouter } from "./routes/files.js";
 import { createDeviceRouter } from "./routes/device.js";
 import deviceModel from "./models/mysql/device.js";
-import express from "express";
 import { createDashboardRouter } from "./routes/dashboard.js";
 import DashboardModel from "./models/mysql/dashboard.js";
 import compression from "compression";
+import userModel from "./models/mysql/users.js";
 
 const apiRouter: Router = Router();
 
 const locationRouter = createLocationRouter({ model: locationModel });
-const usersRouter = createUsersRouter({ model: userModel, redis });
+const usersRouter = createUsersRouter({
+  model: userModel,
+});
 const suppliersRouter = createSuppliersRouter({ model: supplierModel });
 const filesRouter = createFilesRouter();
 const deviceRouter = createDeviceRouter({ model: deviceModel });

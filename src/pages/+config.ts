@@ -9,6 +9,7 @@ export default {
     },
   },
   prerender: false,
+  title: "Inventary app",
   extends: [vikeReact],
 } satisfies Config;
 

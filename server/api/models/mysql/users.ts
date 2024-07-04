@@ -1,19 +1,22 @@
-import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import getConnection from "../../db/mysql.js";
-import {
-  ATTEMPT_TIMEOUT,
-  JSW_KEY,
-  MAX_ATTEMPTS,
-  SALT_ROUNDS,
-} from "../../../config.js";
+import { ATTEMPT_TIMEOUT, JSW_KEY, MAX_ATTEMPTS } from "../../../config.js";
 import * as OTPAuth from "otpauth";
 import { toDataURL } from "qrcode";
 import { generateBase32Secret } from "../../utils.js";
 import { User } from "../../interface/user.js";
+import { RedisClientType } from "redis";
+import redis from "../../../redis/config.js";
+import scrypt from "../../../scrypt.js";
 
-export default class UserModel {
-  static async getAll({ email }: any) {
+class UserModel {
+  redis: RedisClientType;
+
+  constructor({ redis }) {
+    this.redis = redis;
+  }
+
+  async getAll({ email }: any) {
     let query = "SELECT *, BIN_TO_UUID(id) as id FROM users";
     const params: any[] = [];
 
@@ -41,7 +44,7 @@ export default class UserModel {
     }
   }
 
-  static async getById({ id }: { id: string }) {
+  async getById({ id }: { id: string }) {
     try {
       const mysqlConnection = await getConnection();
       const [rows] = await mysqlConnection.query(
@@ -75,38 +78,30 @@ export default class UserModel {
     }
   }
 
-  static async create({ input }: { input: User | any }) {
+  async create({ input }: { input: User | any }) {
     const { email, password } = input;
-
     try {
-      const hash = await bcrypt.hash(password, +SALT_ROUNDS);
-
+      const hash = await scrypt.hash(password);
       const mysqlConnection = await getConnection();
-
       const [existingUser]: any = await mysqlConnection.query(
         "SELECT email FROM users WHERE email = ?;",
         [email]
       );
-
       if (existingUser.length > 0) {
         return { success: false, message: "Email is already in use" };
       }
-
       const [uuidResult]: any = await mysqlConnection.query(
         "SELECT UUID() AS uuid;"
       );
       const [{ uuid }] = uuidResult;
-
       await mysqlConnection.query(
         `INSERT INTO users (id, email, password) VALUES (UUID_TO_BIN(?), ?, ?);`,
         [uuid, email, hash]
       );
-
       const [users]: any = await mysqlConnection.query(
         "SELECT *, BIN_TO_UUID(id) as id FROM users WHERE id = UUID_TO_BIN(?);",
         [uuid]
       );
-
       return { success: true, data: users[0] };
     } catch (error) {
       console.error("Error creating user:", error);
@@ -114,7 +109,7 @@ export default class UserModel {
     }
   }
 
-  static async delete({ id }: any) {
+  async delete({ id }: any) {
     try {
       const mysqlConnection = await getConnection();
       await mysqlConnection.query(
@@ -129,7 +124,7 @@ export default class UserModel {
     }
   }
 
-  static async update({ id, input }: any) {
+  async update({ id, input }: any) {
     try {
       const mysqlConnection = await getConnection();
       const updateFields: string[] = [];
@@ -166,28 +161,27 @@ export default class UserModel {
     }
   }
 
-  static async login({ input }: any) {
+  async login({ input }: any) {
     const mysqlConnection = await getConnection();
-
     const [userQuery]: any = await mysqlConnection.query(
       "SELECT *, BIN_TO_UUID(id) as id FROM users WHERE email = ?",
       [input.email]
     );
-
     if (!userQuery.length)
       return {
         success: false,
         status: 404,
         message: "User not found",
       };
-
     const [{ password, email, id, two_factor }]: User[] = userQuery;
-
-    const match = await bcrypt.compare(input.password, password);
-
+    const match = await scrypt.compare(input.password, password);
     if (match) {
       const token = jwt.sign({ id }, JSW_KEY as string, {
         expiresIn: "1h",
+      });
+      await this.redis.set(`${id}:attempts`, 0, {
+        EX: +ATTEMPT_TIMEOUT,
+        NX: true,
       });
       return {
         success: true,
@@ -196,26 +190,25 @@ export default class UserModel {
         message: "Login succesfull",
       };
     }
-
-    return { success: false, message: "Credentials are not correct", status: 401 };
+    return {
+      success: false,
+      message: "Credentials are not correct",
+      status: 401,
+    };
   }
 
-  static async changePassword({ input, id }: any) {
+  async changePassword({ input, id }: any) {
     try {
       const mysqlConnection = await getConnection();
       const [rows] = await mysqlConnection.query(
         "SELECT *, BIN_TO_UUID(id) as id FROM users WHERE id = UUID_TO_BIN(?);",
         [id]
       );
-
       if ((rows as []).length === 0) {
         return { success: false, message: "User not found", statusCode: 404 };
       }
-
       const [user] = rows as any[];
-
-      const match = await bcrypt.compare(input.current, user.password);
-
+      const match = await scrypt.compare(input.current, user.password);
       if (!match) {
         return {
           success: false,
@@ -223,14 +216,11 @@ export default class UserModel {
           statusCode: 400,
         };
       }
-
-      const hash = await bcrypt.hash(input.new, +SALT_ROUNDS);
-
+      const hash = await scrypt.hash(input.new);
       await mysqlConnection.query(
         "UPDATE users SET password = ? WHERE id = UUID_TO_BIN(?);",
         [hash, id]
       );
-
       return {
         success: true,
         message: "Password changed succesfully",
@@ -246,7 +236,7 @@ export default class UserModel {
     }
   }
 
-  static async enable2fa({ id, redis }) {
+  async enable2fa({ id }) {
     try {
       const { statusCode, message, data: user } = await this.getById({ id });
 
@@ -274,7 +264,7 @@ export default class UserModel {
         try {
           const qrUrl = await toDataURL(otpauth_url);
 
-          await redis.set(`${user?.id}:attempts`, 0, {
+          await this.redis.set(`${user?.id}:attempts`, 0, {
             EX: +ATTEMPT_TIMEOUT,
           });
 
@@ -304,7 +294,7 @@ export default class UserModel {
     }
   }
 
-  static async verify2fa({ id, redis, token_2fa }) {
+  async verify2fa({ id, token_2fa }) {
     const {
       statusCode,
       message,
@@ -317,7 +307,7 @@ export default class UserModel {
     }
     const now = Date.now();
 
-    const blockedUntil = await redis.get(`${id}:blockedUntil`);
+    const blockedUntil = await this.redis.get(`${id}:blockedUntil`);
 
     if (blockedUntil && now < +blockedUntil) {
       return {
@@ -326,7 +316,7 @@ export default class UserModel {
         statusCode: 403,
       };
     }
-    let attempts = +((await redis.get(`${id}:attempts`)) || 0);
+    let attempts = +((await this.redis.get(`${id}:attempts`)) || 0);
 
     const secret = user.app_secret;
 
@@ -342,13 +332,13 @@ export default class UserModel {
 
     if (delta === null) {
       attempts += 1;
-      await redis.set(`${id}:attempts`, attempts, {
+      await this.redis.set(`${id}:attempts`, attempts, {
         EX: +ATTEMPT_TIMEOUT,
       });
 
       if (attempts >= +MAX_ATTEMPTS) {
-        await redis.set(`${id}:blockedUntil`, now + +ATTEMPT_TIMEOUT);
-        await redis.del(`${id}:attempts`);
+        await this.redis.set(`${id}:blockedUntil`, now + +ATTEMPT_TIMEOUT);
+        await this.redis.del(`${id}:attempts`);
 
         return {
           message: "Too many attempts. Please try again later.",
@@ -363,8 +353,8 @@ export default class UserModel {
       };
     }
 
-    await redis.del(`${id}:attempts`);
-    await redis.del(`${id}:blockedUntil`);
+    await this.redis.del(`${id}:attempts`);
+    await this.redis.del(`${id}:blockedUntil`);
 
     const token = jwt.sign({ id }, JSW_KEY as string, {
       expiresIn: "1h",
@@ -378,3 +368,7 @@ export default class UserModel {
     };
   }
 }
+
+const userModel = new UserModel({ redis });
+
+export default userModel;

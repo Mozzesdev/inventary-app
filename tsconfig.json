@@ -10,13 +10,23 @@
     "sourceMap": true,
     "module": "ESNext",
     "noEmit": true,
+    "noImplicitAny": false,
     "moduleResolution": "Bundler",
     "target": "ES2022",
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
-    "types": ["vite/client"],
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ESNext"
+    ],
+    "types": [
+      "vite/client",
+      "vike-react",
+      "vite-plugin-vercel/types"
+    ],
     "jsx": "preserve",
-    "jsxImportSource": "react",
-    "noImplicitAny": false
+    "jsxImportSource": "react"
   },
-  "exclude": ["dist"]
+  "exclude": [
+    "dist"
+  ]
 }

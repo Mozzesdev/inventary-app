@@ -2,5 +2,4 @@ node_modules/
 dist/
 .vercel
 .env.*
-server/api/firebase/*.json
 .vercel

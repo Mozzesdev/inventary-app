@@ -1,9 +1,10 @@
 export const {
   NODE_ENV = "development",
-  VITE_PORT: PORT = 2000,
+  PORT = 3000,
   BASE = "/",
   ABORT_DELAY = "1000",
   MYSQL_CONFIG,
+  FIREBASE_KEY,
   JSW_KEY,
   ACCEPT_ORIGINS,
   SALT_ROUNDS = 10,

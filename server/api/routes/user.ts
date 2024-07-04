@@ -2,13 +2,12 @@ import { Router } from "express";
 import { UserController } from "../controllers/UserController.js";
 import { authenticateToken } from "../../middlewares/auth.middleware.js";
 
-export const createUsersRouter: ({ model, redis }: any) => Router = ({
+export const createUsersRouter: ({ model }: any) => Router = ({
   model,
-  redis,
 }: any) => {
   const userRouter = Router();
 
-  const userController = new UserController({ model, redis });
+  const userController = new UserController({ model });
 
   userRouter.get("/", authenticateToken, userController.getAll);
 

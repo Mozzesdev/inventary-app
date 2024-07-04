@@ -4,5 +4,7 @@
     "module": "Node16",
     "moduleResolution": "Node16",
     "resolveJsonModule": true,
-  }
+    "noImplicitAny": false
+  },
+  "include": ["*.ts"]
 }
