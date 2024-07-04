@@ -71,6 +71,7 @@ export class UserController {
       return res
         .status(400)
         .json({ error: JSON.parse(validated.error.message) });
+    console.log(validated.data);
 
     const {
       status,
