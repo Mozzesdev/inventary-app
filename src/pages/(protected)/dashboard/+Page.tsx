@@ -127,7 +127,11 @@ const Page = () => {
             <MapIcon width={20} />
           </div>
           <p className="text-2xl font-inter-bold text-red-500">
-            0{counters.location_count}
+            {counters.location_count
+              ? counters.location_count > 9
+                ? counters.location_count
+                : `0${counters.location_count}`
+              : 0}
           </p>
           <Link
             className="text-sm flex gap-2 group items-center hover:underline hover:text-[#9ba5b0] mt-4 text-[#aab5c1]"
@@ -143,7 +147,11 @@ const Page = () => {
             <BuildingOffice2Icon width={20} />
           </div>
           <p className="text-2xl font-inter-bold text-green-400">
-            0{counters.supplier_count}
+            {counters.supplier_count
+              ? counters.supplier_count > 9
+                ? counters.supplier_count
+                : `0${counters.supplier_count}`
+              : 0}
           </p>
           <Link
             className="text-sm flex gap-2 group items-center hover:underline hover:text-[#9ba5b0] mt-4 text-[#aab5c1]"
@@ -159,7 +167,11 @@ const Page = () => {
             <DeviceTabletIcon width={20} />
           </div>
           <p className="text-2xl font-inter-bold text-blue-500">
-            0{counters.devices_count}
+            {counters.devices_count
+              ? counters.devices_count > 9
+                ? counters.devices_count
+                : `0${counters.devices_count}`
+              : 0}
           </p>
           <Link
             className="text-sm flex gap-2 group items-center hover:underline hover:text-[#9ba5b0] mt-4 text-[#aab5c1]"
@@ -177,7 +189,11 @@ const Page = () => {
             <ExclamationTriangleIcon width={20} />
           </div>
           <p className="text-2xl font-inter-bold text-yellow-500">
-            0{counters.maintenance_devices}
+            {counters.maintenance_devices
+              ? counters.maintenance_devices > 9
+                ? counters.maintenance_devices
+                : `0${counters.maintenance_devices}`
+              : 0}
           </p>
           <Link
             className="text-sm flex gap-2 group items-center hover:underline hover:text-[#9ba5b0] mt-4 text-[#aab5c1]"
