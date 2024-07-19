@@ -11,6 +11,7 @@ import { Device } from "../../../interfaces/device";
 import Select from "../../../components/Select";
 import Checkbox from "../../../components/Checkbox";
 import { useAlert } from "../../../hooks/useAlert";
+import React from "react";
 
 const DeviceModal = ({
   deviceModal,
@@ -75,14 +76,21 @@ const DeviceModal = ({
   return (
     <Dialog show={deviceModal} hide={closeModal} className="p-5 flex flex-col">
       <span className="text-xl font-inter-medium">
-        {data.id ? "Edit a location" : "Create a new location"}.
+        {data.id ? "Edit a device" : "Create a new device"}.
       </span>
       <small className="text-sm text-[#8d96a0] mt-1">
         Enter device information.
       </small>
       <hr className="mb-10 mt-3 h-[1px] bg-[#30363d] border-0" />
       <Formik
-        initialValues={data}
+        initialValues={{
+          ...data,
+          purchase_date: data?.purchase_date?.split("T")[0] ?? "",
+          expiration_date: data?.expiration_date?.split("T")[0] ?? "",
+          production_date: data?.production_date?.split("T")[0] ?? "",
+          location_id: data?.location?.id ?? "",
+          supplier_id: data?.supplier?.id ?? "",
+        }}
         enableReinitialize
         onSubmit={handleSubmit}
         validationSchema={Yup.object({
@@ -219,22 +227,28 @@ const DeviceModal = ({
                   Does the device require maintenance?
                 </span>
               </div>
-              <label
-                className="block mb-2 text-sm font-medium text-left text-neutral-400"
-                htmlFor="files"
-              >
-                Upload multiple files
-              </label>
-              <input
-                className="max-w-52 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-                id="files"
-                type="file"
-                name="files"
-                multiple
-                onChange={async (e) =>
-                  await setFieldValue("files", e.currentTarget.files)
-                }
-              />
+              {!data.id ? (
+                <>
+                  <label
+                    className="block mb-2 text-sm font-medium text-left text-neutral-400"
+                    htmlFor="files"
+                  >
+                    Upload multiple files
+                  </label>
+                  <input
+                    className="max-w-52 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                    id="files"
+                    type="file"
+                    name="files"
+                    multiple
+                    onChange={async (e) =>
+                      await setFieldValue("files", e.currentTarget.files)
+                    }
+                  />
+                </>
+              ) : (
+                ""
+              )}
               <div className="flex gap-3 mt-4 justify-center">
                 <Button className="py-1 px-4" submit disabled={isSubmitting}>
                   {data.id ? "Edit" : "Create"}

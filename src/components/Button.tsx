@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import { classNames } from "../../utils/classNames";
+import React from "react";
 
 const Button = ({
   children,

@@ -27,7 +27,7 @@ export const getUserById = (id: string) => {
   return axiosInstance.get(`/user/${id}`);
 };
 
-export const verify2fa = (body: { id: string; token_2fa: string }) => {
+export const verify2fa = (body: VerifyBody) => {
   return axiosInstance.post("/user/verify-2fa", body);
 };
 
@@ -35,6 +35,12 @@ interface AuthValues {
   email: string;
   password: string;
 }
+
+interface VerifyBody {
+  id: string;
+  token_2fa: string;
+}
+
 
 interface PasswordBody {
   new: string;

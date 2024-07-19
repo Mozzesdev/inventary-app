@@ -45,13 +45,6 @@ export const getDevicesColumns = (): ColumnTable[] => [
     },
   },
   {
-    name: "Purchase date",
-    show: true,
-    value: ["purchase_date"],
-    index: false,
-    isDate: true,
-  },
-  {
     name: "Expiration date",
     show: true,
     value: ["expiration_date"],

@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { FieldHookConfig, useField } from "formik";
-import { useState } from "react";
+import React, { useState } from "react";
 import { classNames } from "../../utils/classNames";
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 
@@ -46,6 +46,7 @@ const Input: React.FC<InputProps & FieldHookConfig<string>> = ({
       <Component
         {...field}
         {...props}
+        autoComplete="off"
         placeholder={placeholder && !floatLabel ? placeholder : ""}
         onBlur={() => setFocus(false)}
         onFocus={() => {
@@ -58,7 +59,7 @@ const Input: React.FC<InputProps & FieldHookConfig<string>> = ({
           touched && error
             ? "border-red-500 focus:border-red-500"
             : "border-gray-500 focus:border-gray-400",
-          "bg-[#0d1117] py-[5px] rounded-md border text-sm resize-none outline-none text-gray-300 focus:ring-gray-900 block w-full px-3 h-full placeholder:text-sm"
+          "bg-[#0d1117] disabled:bg-[#323841] disabled:text-gray-400 py-[5px] rounded-md border text-sm resize-none outline-none text-gray-300 focus:ring-gray-900 block w-full px-3 h-full placeholder:text-sm"
         )}
       >
         {as === "select" ? children : null}

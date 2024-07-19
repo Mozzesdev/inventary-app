@@ -1,6 +1,6 @@
 import z from "zod";
 
-const userSchema = z.object({
+const loginSchema = z.object({
   password: z
     .string({ message: "Password must be a string" })
     .min(8, { message: "The min length of password is 8" }),
@@ -8,7 +8,23 @@ const userSchema = z.object({
     .string()
     .min(1, { message: "Email is required" })
     .email({ message: "Invalid email format" }),
-  two_factor: z.boolean().optional(),
+});
+
+const userSchema = z.object({
+  password: z
+    .string({ message: "Password must be a string" })
+    .min(8, { message: "The min length of password is 8" })
+    .regex(/\d/)
+    .regex(/[a-z]/)
+    .regex(/[A-Z]/)
+    .regex(/[!@#$%^&*(),.?":{}|<>]/),
+  email: z
+    .string()
+    .min(1, { message: "Email is required" })
+    .email({ message: "Invalid email format" }),
+  role_id: z.string().min(1),
+  root_user: z.boolean().or(z.number()),
+  two_factor: z.boolean().or(z.number()).optional().nullable(),
   app_secret: z.string().optional().nullable(),
 });
 
@@ -30,6 +46,10 @@ const passwordSchema = z
     path: ["confirm"],
   });
 
+const validateLogin = (input: any) => {
+  return loginSchema.safeParse(input);
+};
+
 const validateUser = (input: any) => {
   return userSchema.safeParse(input);
 };
@@ -42,4 +62,9 @@ const validatePasswordChange = (input: any) => {
   return passwordSchema.safeParse(input);
 };
 
-export { validateUser, validatePartialUser, validatePasswordChange };
+export {
+  validateUser,
+  validatePartialUser,
+  validatePasswordChange,
+  validateLogin,
+};

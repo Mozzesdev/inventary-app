@@ -16,6 +16,10 @@ export const getDevices = async ({
   );
 };
 
+export const getDeviceById = async ({ id }) => {
+  return await axiosInstance.get(`/devices/${id}`);
+};
+
 export const createDevice = async (
   data: Device
 ): Promise<AxiosResponse<any>> => {
@@ -68,8 +72,8 @@ export const getDevicesColumns = (): ColumnTable[] => [
     isBoolean: true,
     placeholder: {
       true: "Requires",
-      false: "Does not require"
-    }
+      false: "Does not require",
+    },
   },
   {
     name: "Brand",

@@ -14,6 +14,7 @@ import {
 } from "../../../services/suppliers.services";
 import FilesModal from "../../../components/FilesModal";
 import Pagination from "../../../components/Pagination";
+import React from "react";
 
 const Companies = () => {
   const [companyModal, setCompanyModal] = useState(false);
@@ -93,7 +94,6 @@ const Companies = () => {
 
   useEffect(() => {
     fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
   const openFilesModal = (data: any) => {
@@ -179,6 +179,9 @@ const Companies = () => {
             loading={loading}
             options={tableOptions}
           />
+          <span className="mt-3 block text-center text-sm text-[#8d96a0]">
+            Showing 1-{companies?.data.length} of {companies?.pagination.total} entries
+          </span>
         </div>
       </section>
     </>

@@ -16,7 +16,7 @@ class UserModel {
     this.redis = redis;
   }
 
-  async getAll({ email }: any) {
+  async getAll({ email }: { email?: string }) {
     let query = "SELECT *, BIN_TO_UUID(id) as id FROM users";
     const params: any[] = [];
 
@@ -31,16 +31,45 @@ class UserModel {
       const mysqlConnection = await getConnection();
       const [users] = await mysqlConnection.query(query, params);
 
-      const filteredUsers = (users as []).map(({ email, id, two_factor }) => ({
-        email,
-        id,
-        two_factor,
-      }));
+      const roleQuery =
+        "SELECT *, BIN_TO_UUID(id) as id FROM roles WHERE id = ?";
 
-      return { success: true, data: filteredUsers, message: "Success", statusCode: 200 };
+      const userPromises = (users as []).map(
+        async ({
+          role_id,
+          email,
+          two_factor,
+          id,
+          created_at,
+          root_user,
+        }: any) => {
+          const [role] = await mysqlConnection.query(roleQuery, [role_id]);
+          return {
+            email,
+            id,
+            created_at,
+            two_factor,
+            role: (role as []).length ? role[0] : null,
+            root_user: !!root_user,
+          };
+        }
+      );
+
+      const filteredUsers = await Promise.all(userPromises);
+
+      return {
+        success: true,
+        data: filteredUsers,
+        message: "Success",
+        statusCode: 200,
+      };
     } catch (error) {
       console.error("Error fetching users:", error);
-      return { success: false, message: "Error fetching locations", statusCode: 500 };
+      return {
+        success: false,
+        message: "Error fetching users",
+        statusCode: 500,
+      };
     }
   }
 
@@ -57,13 +86,21 @@ class UserModel {
       }
 
       const user: User = rows[0];
+
+      const [role] = await mysqlConnection.query(
+        "SELECT *, BIN_TO_UUID(id) as id FROM roles WHERE id = ?;",
+        [user.role_id]
+      );
+
       return {
         success: true,
         data: {
           email: user.email,
           id: user.id,
-          app_secret: user.app_secret,
+          app_secret: !!user.app_secret,
           two_factor: user.two_factor,
+          root_user: !!user.root_user,
+          role: (role as [])?.length ? role[0] : undefined,
         },
         statusCode: 200,
         message: "User found",
@@ -79,7 +116,8 @@ class UserModel {
   }
 
   async create({ input }: { input: User | any }) {
-    const { email, password } = input;
+    const { email, password, role_id, root_user } = input;
+
     try {
       const hash = await scrypt.hash(password);
       const mysqlConnection = await getConnection();
@@ -87,40 +125,82 @@ class UserModel {
         "SELECT email FROM users WHERE email = ?;",
         [email]
       );
-      if (existingUser.length > 0) {
-        return { success: false, message: "Email is already in use" };
+
+      if (existingUser?.length) {
+        return {
+          success: false,
+          message: "Email is already in use",
+          statusCode: 409,
+        };
       }
+
       const [uuidResult]: any = await mysqlConnection.query(
         "SELECT UUID() AS uuid;"
       );
       const [{ uuid }] = uuidResult;
       await mysqlConnection.query(
-        `INSERT INTO users (id, email, password) VALUES (UUID_TO_BIN(?), ?, ?);`,
-        [uuid, email, hash]
+        `INSERT INTO users (id, email, password, role_id, root_user) VALUES (UUID_TO_BIN(?), ?, ?, UUID_TO_BIN(?), ?);`,
+        [uuid, email, hash, role_id, root_user]
       );
       const [users]: any = await mysqlConnection.query(
         "SELECT *, BIN_TO_UUID(id) as id FROM users WHERE id = UUID_TO_BIN(?);",
         [uuid]
       );
-      return { success: true, data: users[0] };
+      return { success: true, data: users[0], statusCode: 200 };
     } catch (error) {
       console.error("Error creating user:", error);
-      return { success: false, message: "Error creating user" };
+      return {
+        success: false,
+        message: "Error creating user",
+        statusCode: 500,
+      };
     }
   }
 
-  async delete({ id }: any) {
+  async delete({ id }) {
     try {
       const mysqlConnection = await getConnection();
+
+      const [rows] = await mysqlConnection.query(
+        "SELECT root_user FROM users WHERE id = UUID_TO_BIN(?)",
+        [id]
+      );
+
+      if (!(rows as [])?.length) {
+        return {
+          success: false,
+          message: "User not found",
+          statusCode: 404,
+        };
+      }
+
+      const user = rows[0];
+
+      if (user.root_user) {
+        return {
+          success: false,
+          message: "Cannot delete master user",
+          statusCode: 403,
+        };
+      }
+
       await mysqlConnection.query(
         "DELETE FROM users WHERE id = UUID_TO_BIN(?)",
         [id]
       );
 
-      return { success: true, message: "User deleted successfully" };
+      return {
+        success: true,
+        message: "User deleted successfully",
+        statusCode: 200,
+      };
     } catch (error) {
       console.error("Error deleting user:", error);
-      return { success: false, message: "Error deleting user" };
+      return {
+        success: false,
+        message: "Error deleting user",
+        statusCode: 500,
+      };
     }
   }
 
@@ -132,8 +212,17 @@ class UserModel {
 
       for (const key in input) {
         if (Object.prototype.hasOwnProperty.call(input, key)) {
-          updateFields.push(`${key} = ?`);
-          fieldValues.push(input[key]);
+          if (key === "password") {
+            const hashedPassword = await scrypt.hash(input[key]);
+            updateFields.push(`${key} = ?`);
+            fieldValues.push(hashedPassword);
+          } else if (key === "role_id") {
+            updateFields.push(`${key} = UUID_TO_BIN(?)`);
+            fieldValues.push(input[key]);
+          } else {
+            updateFields.push(`${key} = ?`);
+            fieldValues.push(input[key]);
+          }
         }
       }
 
@@ -145,12 +234,7 @@ class UserModel {
 
       await mysqlConnection.query(sqlQuery, fieldValues);
 
-      const [updateUser]: any = await mysqlConnection.query(
-        "SELECT *, BIN_TO_UUID(id) as id FROM users WHERE id = UUID_TO_BIN(?);",
-        [id]
-      );
-
-      return { success: true, data: updateUser[0], statusCode: 200 };
+      return { success: true, statusCode: 200, message: "Updated succesful" };
     } catch (error) {
       console.error("Error updating user:", error);
       return {
@@ -295,16 +379,17 @@ class UserModel {
   }
 
   async verify2fa({ id, token_2fa }) {
-    const {
-      statusCode,
-      message,
-      data: user,
-      success,
-    } = await this.getById({ id });
+    const mysqlConnection = await getConnection();
+    const [rows] = await mysqlConnection.query(
+      "SELECT *, BIN_TO_UUID(id) as id FROM users WHERE id = UUID_TO_BIN(?);",
+      [id]
+    );
 
-    if (!user) {
-      return { statusCode, message, success };
+    if ((rows as []).length === 0) {
+      return { success: false, message: "User not found", statusCode: 404 };
     }
+
+    const user: User = rows[0];
     const now = Date.now();
 
     const blockedUntil = await this.redis.get(`${id}:blockedUntil`);
@@ -328,7 +413,7 @@ class UserModel {
       secret: secret,
     });
 
-    const delta = totp.validate({ token: token_2fa });
+    const delta = totp.validate({ token: token_2fa, window: 1 });
 
     if (delta === null) {
       attempts += 1;

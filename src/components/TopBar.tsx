@@ -1,6 +1,7 @@
 import { BellIcon } from "@heroicons/react/24/outline";
 import { Bars3Icon } from "@heroicons/react/24/solid";
 import { usePageContext } from "vike-react/usePageContext";
+import React from "react";
 
 const TopBar = ({ hideSidebar }: any) => {
   const { config }: any = usePageContext();

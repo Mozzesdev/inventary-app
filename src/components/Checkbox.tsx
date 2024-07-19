@@ -1,4 +1,5 @@
 import { classNames } from "../../utils/classNames";
+import React from "react";
 
 const Checkbox: React.FC<CheckboxProps> = ({
   className = "",

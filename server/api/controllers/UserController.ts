@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { Model } from "../interface/model.js";
 import {
+  validateLogin,
   validatePartialUser,
   validatePasswordChange,
   validateUser,
@@ -28,22 +29,24 @@ export class UserController {
         .status(400)
         .json({ error: JSON.parse(validated.error.message) });
 
-    const result = await this.model.create({ input: validated.data });
+    const { statusCode, ...result } = await this.model.create({
+      input: validated.data,
+    });
 
-    res.status(201).json(result);
+    res.status(statusCode).json(result);
   };
 
   getById = async (req: Request, res: Response) => {
-    const result: any = await this.model.getById(req.params);
+    const { statusCode, ...result }: any = await this.model.getById(req.params);
 
-    res.status(201).json(result);
+    res.status(statusCode).json(result);
   };
 
   delete = async (req: Request, res: Response) => {
     const { id } = req.params;
-    const result: any = await this.model.delete({ id });
+    const { statusCode, ...result }: any = await this.model.delete({ id });
 
-    res.status(201).send(result);
+    res.status(statusCode).send(result);
   };
 
   update = async (req: Request, res: Response) => {
@@ -56,16 +59,16 @@ export class UserController {
 
     const { id } = req.params;
 
-    const result: any = await this.model.update({
+    const { statusCode, ...result }: any = await this.model.update({
       id,
       input: validated.data,
     });
 
-    res.status(result.statusCode).send(result);
+    res.status(statusCode).send(result);
   };
 
   login = async (req: Request, res: Response) => {
-    const validated = validateUser(req.body);
+    const validated = validateLogin(req.body);
 
     if (!validated.success)
       return res

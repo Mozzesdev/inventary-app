@@ -1,17 +1,26 @@
+import { classNames } from "../../utils/classNames";
 import { useDropdown } from "../hooks/DropdownProvider";
+import React from "react";
 
-const TableRow = ({ rowData, options = [] }: any) => {
+const TableRow = ({ rowData, row, options = [], onClick }: any) => {
   const dropdownContext = useDropdown();
 
   return (
-    <tr className="border-b border-neutral-700 border-solid last-of-type:border-b-0 text-sm max-xl:text-xs">
+    <tr
+      className={classNames(
+        "border-b border-neutral-700 border-solid last-of-type:border-b-0 text-sm max-xl:text-xs",
+        onClick ? "cursor-pointer" : ""
+      )}
+      onClick={() => onClick && onClick(row)}
+      title={onClick ? 'Click to manage the maintenance' : ''}
+    >
       {rowData.map((data: any, index: number) => (
         <td key={index} className="px-4 py-3 whitespace-nowrap text-center">
           {data || "..."}
         </td>
       ))}
       {options.length ? (
-        <td className="right-0 sticky bg-[#21262d]">
+        <td className="right-[-1px] sticky bg-[#21262d]">
           <div className="w-full px-4 flex justify-center">
             <div className="relative inline-block text-left">
               <div>

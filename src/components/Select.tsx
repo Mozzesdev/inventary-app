@@ -1,5 +1,6 @@
 import { classNames } from "../../utils/classNames";
 import { useField } from "formik";
+import React from "react";
 
 const Select = ({
   options = [],
@@ -8,7 +9,9 @@ const Select = ({
   required = false,
   ...props
 }: SelectProps) => {
-  const [field, { value, touched }, { setTouched }] = useField(props as any);
+  const [field, { value: selectValue, touched }, { setTouched }] = useField(
+    props as any
+  );
 
   return (
     <div className="relative" onClick={() => setTouched(true)}>
@@ -21,16 +24,17 @@ const Select = ({
       <select
         id={field.name}
         name={field.name}
+        value={selectValue}
         onChange={onChange}
         className={classNames(
-          !value && required && touched
+          !selectValue && required && touched
             ? "border-red-500 focus:border-red-500"
             : "border-gray-500 focus:border-gray-400",
           "rounded-[7px] w-full h-full border bg-[#0d1117] px-3 py-[5px] text-sm outline-none"
         )}
         {...props}
       >
-        <option value="" defaultChecked>
+        <option value="">
           Select an option
         </option>
         {options.map(({ label, value }) => {

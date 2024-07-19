@@ -14,6 +14,11 @@ export interface Device {
   supplier?: Supplier;
   purchase_date?: string;
   production_date?: string;
+  maintenance_supplier_id?: string;
+  maintenance_date?: string;
+  next_maintenance?: string;
+  maintenance_comment?: string;
+  maintenance_supplier?: { id: string; name: string };
   expiration_date?: string;
   note?: string;
   created_at?: string;

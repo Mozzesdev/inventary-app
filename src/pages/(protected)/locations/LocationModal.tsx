@@ -11,6 +11,7 @@ import Input from "../../../components/Input";
 import Button from "../../../components/Button";
 import Spinner from "../../../components/Spinner";
 import { uploadFile } from "../../../services/files.services";
+import React from "react";
 
 const LocationModal = ({ locationModal, closeModal, fetchData, data }: any) => {
   const handleSubmit = async (

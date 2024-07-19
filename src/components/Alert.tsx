@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { classNames } from "../../utils/classNames";
 
 interface AlertProps {
@@ -16,7 +16,7 @@ const Alert = ({
 }: AlertProps) => {
   const alertStyleType = {
     info: "border-blue-500 text-blue-700",
-    success: "border-green-500 text-green-700",
+    success: "border-[#3fb950] text-[#3fb950]",
     warning: "border-yellow-500 text-yellow-700",
     error: "border-red-500 text-red-500",
   };
@@ -28,7 +28,6 @@ const Alert = ({
       }, timeout * 1000);
       return () => clearTimeout(timer);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

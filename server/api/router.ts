@@ -13,17 +13,18 @@ import DashboardModel from "./models/mysql/dashboard.js";
 import compression from "compression";
 import userModel from "./models/mysql/users.js";
 import morgan from "morgan";
+import { createRolesRouter } from "./routes/roles.js";
+import roleModel from "./models/mysql/role.js";
 
 const apiRouter: Router = Router();
 
 const locationRouter = createLocationRouter({ model: locationModel });
-const usersRouter = createUsersRouter({
-  model: userModel,
-});
+const usersRouter = createUsersRouter({ model: userModel });
 const suppliersRouter = createSuppliersRouter({ model: supplierModel });
 const filesRouter = createFilesRouter();
 const deviceRouter = createDeviceRouter({ model: deviceModel });
 const dashboardRouter = createDashboardRouter({ model: DashboardModel });
+const roleRouter = createRolesRouter({ model: roleModel });
 
 apiRouter.use(compression());
 apiRouter.use(express.urlencoded({ extended: true }));
@@ -45,5 +46,7 @@ apiRouter.use("/devices", authenticateToken, deviceRouter);
 apiRouter.use("/files", authenticateToken, filesRouter);
 
 apiRouter.use("/dashboard", authenticateToken, dashboardRouter);
+
+apiRouter.use("/role", authenticateToken, roleRouter);
 
 export default apiRouter;

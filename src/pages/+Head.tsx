@@ -1,6 +1,7 @@
 export { Head };
 
 import favicon from "../assets/favicon.png";
+import React from "react";
 
 function Head() {
   return (

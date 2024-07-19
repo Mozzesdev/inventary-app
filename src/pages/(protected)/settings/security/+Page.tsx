@@ -1,6 +1,5 @@
 import {
   ChatBubbleLeftRightIcon,
-  ComputerDesktopIcon,
   DevicePhoneMobileIcon,
   KeyIcon,
   LockClosedIcon,
@@ -20,6 +19,7 @@ import Setup2faDialog from "./Setup2faDialog";
 import Spinner from "../../../../components/Spinner";
 import { useAlert } from "../../../../hooks/useAlert";
 import { useAuth } from "../../../../hooks/useAuth";
+import React from "react";
 
 const Page = () => {
   const { user, loading, fetchUser }: any = useAuth();
@@ -84,7 +84,7 @@ const Page = () => {
   };
 
   return (
-    <section className="grid grid-cols-[1fr_.6fr] max-lg:grid-cols-1 gap-7 text-neutral-200 px-10 max-sm:px-4 max-w-[1500px] mx-auto">
+    <section className="grid grid-cols-1 max-lg:grid-cols-1 gap-7 text-neutral-200 px-10 max-sm:px-4 max-w-[1500px] mx-auto">
       {loading ? (
         <div className="fixed inset-0 bg-[#00000038] grid place-items-center">
           <Spinner />
@@ -338,23 +338,6 @@ const Page = () => {
               >
                 Edit
               </Button>
-            </div>
-          </article>
-        </div>
-      </div>
-      <div>
-        <div>
-          <h2 className="text-2xl mb-3 flex items-center gap-3">
-            Devices
-            <ComputerDesktopIcon width={25} />
-          </h2>
-          <hr className="h-[1px] border-0 bg-[#30363db3]" />
-          <p className="text-sm my-3">Connected devices in your account</p>
-          <article className="rounded-lg border border-solid border-[#30363d] overflow-hidden">
-            <div className="bg-[#161b22] p-4">
-              <span className="text-sm block font-inter-medium">
-                All devices
-              </span>
             </div>
           </article>
         </div>

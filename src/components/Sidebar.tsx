@@ -14,6 +14,7 @@ import { logoutUser } from "../services/auth.services";
 import { navigate } from "vike/client/router";
 import { Link } from "./Link";
 import { classNames } from "../../utils/classNames";
+import React from "react";
 
 const Sidebar = ({ show, hide }: any) => {
   const [searchValue, setSearchValue] = useState("");
@@ -27,6 +28,10 @@ const Sidebar = ({ show, hide }: any) => {
         {
           href: "/settings/security",
           label: "Security",
+        },
+        {
+          href: "/settings/users",
+          label: "Users",
         },
       ],
     },
@@ -45,6 +50,7 @@ const Sidebar = ({ show, hide }: any) => {
       href: "/dashboard",
       label: "Dashboard",
       icon: PresentationChartBarIcon,
+      action: () => {},
     },
     {
       href: "/locations",
@@ -57,9 +63,18 @@ const Sidebar = ({ show, hide }: any) => {
       icon: BuildingOffice2Icon,
     },
     {
-      href: "/devices",
       label: "Devices",
       icon: DeviceTabletIcon,
+      children: [
+        {
+          href: "/devices",
+          label: "All devices",
+        },
+        {
+          href: "/devices/maintenance",
+          label: "Maintenance",
+        },
+      ],
     },
   ];
 
@@ -81,10 +96,12 @@ const Sidebar = ({ show, hide }: any) => {
       }}
     >
       <aside className="bg-[#010409] max-lg:w-[250px] top-0 h-full text-neutral-200 py-6 px-8 flex flex-col border-r border-[#30363d]">
-        <span className="flex gap-3 items-center text-sm uppercase font-inter-bold mb-5">
-          <img src={logo} alt="" className="w-9" />
-          Inventary App
-        </span>
+        <Link href="/dashboard" className="!text-neutral-200">
+          <span className="flex gap-3 items-center text-sm uppercase font-inter-bold mb-5">
+            <img src={logo} alt="" className="w-9" />
+            Inventary App
+          </span>
+        </Link>
         <div className="relative w-full min-w-[255px] hidden">
           <div className="grid place-items-center absolute text-gray-500 top-2/4 right-3 -translate-y-2/4 w-5 h-5">
             <MagnifyingGlassIcon className="w-5" />
@@ -105,20 +122,73 @@ const Sidebar = ({ show, hide }: any) => {
         </div>
         <nav className="h-full">
           <ul className="flex flex-col gap-1 h-full">
-            {mainRoutes.map(({ href, label, icon: Icon }) => (
-              <li
-                className="group hover:bg-neutral-800 transition duration-300 rounded-md"
-                key={href}
-              >
-                <Link
-                  className="flex gap-4 p-2 items-center text-sm group-hover:text-neutral-300 leading-relaxed"
-                  href={href}
+            {mainRoutes.map(({ href, label, icon: Icon, children, action }) => {
+              const isNested = children?.length;
+              return (
+                <li
+                  className="group transition duration-300 cursor-pointer"
+                  key={label}
                 >
-                  <Icon width={20} />
-                  {label}
-                </Link>
-              </li>
-            ))}
+                  {href ? (
+                    <Link
+                      className="flex gap-4 p-2 items-center text-sm group-hover:text-neutral-300 leading-relaxed"
+                      href={href}
+                    >
+                      <Icon width={20} />
+                      {label}
+                    </Link>
+                  ) : (
+                    <div
+                      className="flex justify-between items-center hover:bg-neutral-800 p-2 rounded-md"
+                      onClick={() => {
+                        if (isNested) {
+                          setNavSelected((prev) =>
+                            prev === label ? null : label
+                          );
+                        } else {
+                          action && action();
+                        }
+                      }}
+                    >
+                      <span className="flex gap-4 items-center text-sm">
+                        <Icon width={20} />
+                        {label}
+                      </span>
+                      {isNested && (
+                        <ChevronRightIcon
+                          width={18}
+                          className={classNames(
+                            navSelected === label ? "rotate-90" : "",
+                            "transition-[transform] duration-200"
+                          )}
+                        />
+                      )}
+                    </div>
+                  )}
+                  {isNested ? (
+                    <ul
+                      className={classNames(
+                        "flex flex-col overflow-hidden transition-[max-height] duration-300",
+                        label === navSelected ? "max-h-36" : " max-h-0"
+                      )}
+                    >
+                      {children.map(({ label, href }) => (
+                        <li key={href}>
+                          <Link
+                            href={href}
+                            className="flex py-2 pl-11 gap-4 items-center text-sm hover:text-neutral-400 transition-colors duration-200 leading-relaxed cursor-pointer"
+                          >
+                            {label}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    ""
+                  )}
+                </li>
+              );
+            })}
             <hr className="my-2 border-neutral-700" />
             {nestedRoutes.map(({ label, children, icon: Icon, action }) => {
               const isNested = children?.length;
@@ -131,7 +201,9 @@ const Sidebar = ({ show, hide }: any) => {
                     className="flex justify-between items-center hover:bg-neutral-800 p-2 rounded-md"
                     onClick={() => {
                       if (isNested) {
-                        setNavSelected((prev) => (prev ? null : label));
+                        setNavSelected((prev) =>
+                          prev === label ? null : label
+                        );
                       } else {
                         action && action();
                       }
@@ -154,7 +226,7 @@ const Sidebar = ({ show, hide }: any) => {
                   {isNested ? (
                     <ul
                       className={classNames(
-                        "flex flex-col gap-1 overflow-hidden transition-[max-height] duration-300",
+                        "flex flex-col overflow-hidden transition-[max-height] duration-300",
                         label === navSelected ? "max-h-36" : " max-h-0"
                       )}
                     >

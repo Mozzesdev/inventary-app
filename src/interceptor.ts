@@ -4,6 +4,7 @@ import axios, {
   InternalAxiosRequestConfig,
 } from "axios";
 import { navigate } from "vike/client/router";
+import { addAlert } from "./services/alerts.services";
 
 const axiosInstance = axios.create({
   baseURL: "/api",

@@ -1,5 +1,6 @@
 import {
   BuildingOffice2Icon,
+  ChevronRightIcon,
   ExclamationTriangleIcon,
   MapIcon,
 } from "@heroicons/react/24/outline";
@@ -12,6 +13,9 @@ import {
 } from "../../../services/dashboard.service";
 import { useCallback, useEffect, useState } from "react";
 import Spinner from "../../../components/Spinner";
+import React from "react";
+import { Link } from "../../../components/Link";
+import { navigate } from "vike/client/router";
 
 const Page = () => {
   const [devices, setDevices] = useState([]);
@@ -116,60 +120,87 @@ const Page = () => {
       ) : (
         ""
       )}
-      <div className="grid grid-cols-4 gap-3">
-        <article className="bg-[#21262d] rounded-md p-4">
-          <div className="flex justify-between">
-            <p className="text-2xl font-inter-bold text-red-500">
-              {counters.location_count}
-            </p>
-            <div className="bg-[#353d45] rounded-full p-2 inline-flex mb-1">
-              <MapIcon width={20} />
-            </div>
+      <div className="grid grid-cols-4 gap-3 max-lg:grid-cols-3 max-md:grid-cols-2">
+        <article className="border-[#30363d] border rounded-md p-4">
+          <div className="flex justify-between items-center mb-4 text-[#aab5c1]">
+            <span className="text-base font-inter-medium">Locations</span>
+            <MapIcon width={20} />
           </div>
-          <p className="text-[#8d96a0] text-sm">Total locations.</p>
+          <p className="text-2xl font-inter-bold text-red-500">
+            0{counters.location_count}
+          </p>
+          <Link
+            className="text-sm flex gap-2 group items-center hover:underline hover:text-[#9ba5b0] mt-4 text-[#aab5c1]"
+            href="/locations"
+          >
+            View locations
+            <ChevronRightIcon className="w-4 group-hover:translate-x-1 transition-transform duration-150" />
+          </Link>
         </article>
-        <article className="bg-[#21262d] rounded-md p-4">
-          <div className="flex justify-between">
-            <p className="text-2xl font-inter-bold text-blue-500">
-              {counters.supplier_count}
-            </p>
-            <div className="bg-[#353d45] rounded-full p-2 inline-flex mb-1">
-              <BuildingOffice2Icon width={20} />
-            </div>
+        <article className="border-[#30363d] border rounded-md p-4">
+          <div className="flex justify-between items-center mb-4 text-[#aab5c1]">
+            <span className="text-base font-inter-medium">Suppliers</span>
+            <BuildingOffice2Icon width={20} />
           </div>
-          <p className="text-[#8d96a0] text-sm">Total suppliers.</p>
+          <p className="text-2xl font-inter-bold text-green-400">
+            0{counters.supplier_count}
+          </p>
+          <Link
+            className="text-sm flex gap-2 group items-center hover:underline hover:text-[#9ba5b0] mt-4 text-[#aab5c1]"
+            href="/suppliers"
+          >
+            View suppliers
+            <ChevronRightIcon className="w-4 group-hover:translate-x-1 transition-transform duration-150" />
+          </Link>
         </article>{" "}
-        <article className="bg-[#21262d] rounded-md p-4">
-          <div className="flex justify-between">
-            <p className="text-2xl font-inter-bold text-green-500">
-              {counters.devices_count}
-            </p>
-            <div className="bg-[#353d45] rounded-full p-2 inline-flex mb-1">
-              <DeviceTabletIcon width={20} />
-            </div>
+        <article className="border-[#30363d] border rounded-md p-4">
+          <div className="flex justify-between items-center mb-4 text-[#aab5c1]">
+            <span className="text-base font-inter-medium">Devices</span>
+            <DeviceTabletIcon width={20} />
           </div>
-          <p className="text-[#8d96a0] text-sm">Total devices.</p>
-        </article>
-        <article className="bg-[#21262d] rounded-md p-4">
-          <div className="flex justify-between">
-            <p className="text-2xl font-inter-bold text-orange-500">
-              {counters.maintenance_devices}
-            </p>
-            <div className="bg-[#353d45] rounded-full p-2 inline-flex mb-1">
-              <ExclamationTriangleIcon width={20} />
-            </div>
+          <p className="text-2xl font-inter-bold text-blue-500">
+            0{counters.devices_count}
+          </p>
+          <Link
+            className="text-sm flex gap-2 group items-center hover:underline hover:text-[#9ba5b0] mt-4 text-[#aab5c1]"
+            href="/devices"
+          >
+            View devices
+            <ChevronRightIcon className="w-4 group-hover:translate-x-1 transition-transform duration-150" />
+          </Link>
+        </article>{" "}
+        <article className="border-[#30363d] border rounded-md p-4">
+          <div className="flex justify-between items-center mb-4 text-[#aab5c1]">
+            <span className="text-base font-inter-medium">
+              Maintenance devices
+            </span>
+            <ExclamationTriangleIcon width={20} />
           </div>
-          <p className="text-[#8d96a0] text-sm">Total maintenance devices.</p>
+          <p className="text-2xl font-inter-bold text-yellow-500">
+            0{counters.maintenance_devices}
+          </p>
+          <Link
+            className="text-sm flex gap-2 group items-center hover:underline hover:text-[#9ba5b0] mt-4 text-[#aab5c1]"
+            href="/devices/maintenance"
+          >
+            View all devices
+            <ChevronRightIcon className="w-4 group-hover:translate-x-1 transition-transform duration-150" />
+          </Link>
         </article>
       </div>
       <div className="w-full mt-3">
-        <article className="bg-[#21262d] rounded-md p-4">
-          <span className="mb-3 block text-base">
-            Devices on the verge of expiration:
-          </span>
-          <hr className="my-4 h-[1px] border-0 bg-[#30363db3]" />
-          <div>
-            <Table columns={deviceColumns} loading={loading} data={devices} />
+        <article className="rounded-md p-4 border-[#30363d] border">
+          <h2 className="block text-xl font-inter-bold">Devices:</h2>
+          <span className="text-sm text-[#8d96a0]">Expiration devices</span>
+          <div className="mt-3">
+            <Table
+              onRowClick={async (row) =>
+                await navigate(`/devices?maintenance=${row.id}`)
+              }
+              columns={deviceColumns}
+              loading={loading}
+              data={devices}
+            />
           </div>
         </article>
       </div>

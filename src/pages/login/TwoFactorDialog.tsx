@@ -6,11 +6,14 @@ import Button from "../../components/Button";
 import { verify2fa } from "../../services/auth.services";
 import { navigate } from "vike/client/router";
 import { useAlert } from "../../hooks/useAlert";
+import React from "react";
+import Spinner from "../../components/Spinner";
 
 const TwoFactorDialog = ({ show, hide, user }: any) => {
   const { addAlert } = useAlert();
-  const handleSubmit = async (values) => {
+  const handleSubmit = async (values, { setSubmitting }) => {
     try {
+      setSubmitting(true);
       await verify2fa({
         id: user.id,
         token_2fa: values.token_2fa.toString(),
@@ -28,6 +31,8 @@ const TwoFactorDialog = ({ show, hide, user }: any) => {
         severity: "error",
         timeout: 5,
       });
+    } finally {
+      setSubmitting(false);
     }
   };
   return (
@@ -42,8 +47,15 @@ const TwoFactorDialog = ({ show, hide, user }: any) => {
         }}
         onSubmit={handleSubmit}
       >
-        {() => (
+        {({ isSubmitting }) => (
           <>
+            {isSubmitting ? (
+              <div className="absolute bg-[#0000005e] z-40 inset-0 flex justify-center items-center">
+                <Spinner />
+              </div>
+            ) : (
+              ""
+            )}
             <span className="text-2xl mb-5">Two-factor authentication</span>
             <DevicePhoneMobileIcon width={35} className="text-[#8d96a0]" />
             <span className="text-xl py-3">Authentication code</span>

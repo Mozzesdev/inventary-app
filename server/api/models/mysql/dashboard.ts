@@ -48,7 +48,7 @@ export default class DashboardModel {
 
   static async getCounters() {
     const mainDevicesQuery =
-      "SELECT COUNT(*) as main_devices_count FROM device WHERE maintenance = TRUE;";
+      "SELECT COUNT(*) as main_devices_count FROM device WHERE maintenance_date IS NOT NULL;";
     const locationsQuery = "SELECT COUNT(*) as location_count FROM location;";
     const devicesQuery = "SELECT COUNT(*) as devices_count FROM device;";
     const suppliersQuery = "SELECT COUNT(*) as supplier_count FROM supplier;";

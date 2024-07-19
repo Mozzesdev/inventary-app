@@ -1,4 +1,4 @@
-import CrudModel from "../CrudModel.js";
+import CrudModel from "../../interface/CrudModel.js";
 
 class SuppliersModel extends CrudModel {
   constructor() {

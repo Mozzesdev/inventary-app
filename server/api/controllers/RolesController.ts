@@ -1,8 +1,9 @@
 import { Request, Response } from "express";
-import { validateDevice, validatePartialDevice } from "../schemas/devices.js";
+import { Model } from "../interface/model";
+import { validatePartialRole, validateRole } from "../schemas/roles";
 
-export class DeviceController {
-  model: any;
+export class RolesController {
+  model: Model;
 
   constructor({ model }: any) {
     this.model = model;
@@ -14,7 +15,7 @@ export class DeviceController {
   };
 
   create = async (req: Request, res: Response) => {
-    const validated = validateDevice(req.body);
+    const validated = validateRole(req.body);
 
     if (!validated.success)
       return res
@@ -29,9 +30,9 @@ export class DeviceController {
   };
 
   getById = async (req: Request, res: Response) => {
-    const result: any = await this.model.getById(req.params);
+    const { statusCode, ...result }: any = await this.model.getById(req.params);
 
-    res.status(201).json(result);
+    res.status(statusCode).json(result);
   };
 
   delete = async (req: Request, res: Response) => {
@@ -42,7 +43,7 @@ export class DeviceController {
   };
 
   update = async (req: Request, res: Response) => {
-    const validated = validatePartialDevice(req.body);
+    const validated = validatePartialRole(req.body);
 
     if (!validated.success)
       return res
@@ -51,18 +52,11 @@ export class DeviceController {
 
     const { id } = req.params;
 
-    console.log(validated.data);
-
     const { statusCode, ...result }: any = await this.model.update({
       id,
       input: validated.data,
     });
 
     res.status(statusCode).send(result);
-  };
-
-  getMaintenances = async (req: Request, res: Response) => {
-    const { statusCode, ...result } = await this.model.getMaintenances(req.query);
-    res.status(statusCode).json(result);
   };
 }

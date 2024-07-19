@@ -1,24 +1,25 @@
 import React, { useEffect, useRef, useState } from "react";
-import Dropdown, { DropdownItem } from "../../../components/Dropdown";
-import ConfirmDialog from "../../../components/ConfirmDialog";
-import FilesModal from "../../../components/FilesModal";
-import { MagnifyingGlassIcon, PlusIcon } from "@heroicons/react/24/solid";
-import Button from "../../../components/Button";
-import Pagination from "../../../components/Pagination";
-import Table from "../../../components/Table";
+import { usePageContext } from "vike-react/usePageContext";
 import {
   defaultDevicesValues,
   deleteDevice,
   FetchDevices,
-  getDevices,
-  getDevicesColumns,
-} from "../../../services/devices.services";
-import DeviceModal from "./DeviceModal";
-import { getLocations } from "../../../services/locations.services";
-import { Options } from "../../../components/Select";
-import { getSuppliers } from "../../../services/suppliers.services";
-import { usePageContext } from "vike-react/usePageContext";
-import MaintenanceModal from "./MaintenanceModal";
+} from "../../../../services/devices.services";
+import { Options } from "../../../../components/Select";
+import Dropdown, { DropdownItem } from "../../../../components/Dropdown";
+import { getLocations } from "../../../../services/locations.services";
+import { getSuppliers } from "../../../../services/suppliers.services";
+import FilesModal from "../../../../components/FilesModal";
+import DeviceModal from "../DeviceModal";
+import ConfirmDialog from "../../../../components/ConfirmDialog";
+import MaintenanceModal from "../MaintenanceModal";
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import Pagination from "../../../../components/Pagination";
+import Table from "../../../../components/Table";
+import {
+  getMaintenanceDevices,
+  getMaintenanceDevicesColumns,
+} from "../../../../services/maintenances.services";
 
 const Page = () => {
   const { urlParsed } = usePageContext();
@@ -27,7 +28,9 @@ const Page = () => {
   const [loading, setLoading] = useState(false);
   const [confirmDialog, setConfirmDialog] = useState({ id: null, open: false });
   const [devices, setDevices] = useState<FetchDevices>();
-  const [devicesColumns, setDevicesColumns] = useState(getDevicesColumns());
+  const [devicesColumns, setDevicesColumns] = useState(
+    getMaintenanceDevicesColumns()
+  );
   const [locations, setLocations] = useState<Options[]>([]);
   const [suppliers, setSuppliers] = useState<Options[]>([]);
   const [page, setPage] = useState(1);
@@ -42,7 +45,7 @@ const Page = () => {
   const fetchData = async (query = "") => {
     setLoading(true);
     try {
-      const { data } = await getDevices({ query, page });
+      const { data } = await getMaintenanceDevices({ query, page });
       setDevices(data);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -51,11 +54,13 @@ const Page = () => {
     }
   };
 
-  const items: any[] = getDevicesColumns().map(({ value, name }) => ({
-    value: value[0],
-    label: name,
-    id: value[0],
-  }));
+  const items: any[] = getMaintenanceDevicesColumns().map(
+    ({ value, name }) => ({
+      value: value[0],
+      label: name,
+      id: value[0],
+    })
+  );
 
   const handleGlobalFilter = (e: React.ChangeEvent) => {
     const value = (e.target as HTMLInputElement).value;
@@ -72,11 +77,6 @@ const Page = () => {
   const closeModal = () => {
     setDeviceModal(false);
     setSelectedRow(defaultDevicesValues);
-  };
-
-  const openEditModal = (data: Location) => {
-    setSelectedRow(data);
-    setDeviceModal(true);
   };
 
   const deleteLocationRow = async (id: any) => {
@@ -134,29 +134,9 @@ const Page = () => {
     getAllSuppliers();
   }, []);
 
-  const openFilesModal = (data: any) => {
-    setFilesModal({ data, open: true });
-  };
 
-  const tableOptions = (row) => {
-    return [
-      {
-        label: "Edit",
-        action: () => openEditModal(row),
-      },
-      {
-        label: "Delete",
-        action: () => setConfirmDialog({ id: row.id, open: true }),
-      },
-      {
-        label: "Maintenance",
-        action: () => setMaintenanceModal({ id: row.id, open: true }),
-      },
-      {
-        label: "View files",
-        action: () => openFilesModal(row),
-      },
-    ];
+  const tableOptions = () => {
+    return [];
   };
 
   return (
@@ -211,10 +191,6 @@ const Page = () => {
                   width={20}
                 />
               </div>
-              <Button action={() => setDeviceModal(true)}>
-                Add new
-                <PlusIcon width={18} />
-              </Button>
               <Pagination
                 currentPage={page}
                 setterPage={setPage}
@@ -230,7 +206,8 @@ const Page = () => {
             options={tableOptions}
           />
           <span className="mt-3 block text-center text-sm text-[#8d96a0]">
-            Showing 1-{devices?.data.length} of {devices?.pagination.total} entries
+            Showing 1-{devices?.data?.length} of {devices?.pagination?.total}{" "}
+            entries
           </span>
         </div>
       </section>

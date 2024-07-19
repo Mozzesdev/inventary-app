@@ -12,6 +12,8 @@ export const createDeviceRouter: ({ model }: any) => Router = ({
 
   deviceRouter.get("/", deviceController.getAll);
 
+  deviceRouter.get("/maintenances", deviceController.getMaintenances)
+
   deviceRouter.get("/:id", deviceController.getById);
 
   deviceRouter.delete("/:id", deviceController.delete);

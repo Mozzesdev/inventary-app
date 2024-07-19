@@ -1,6 +1,7 @@
-import { createContext, ReactNode, useState } from "react";
+import React, { createContext, ReactNode, useEffect, useState } from "react";
 import AlertsWrapper from "../components/AlertsWrapper";
 import Alert from "../components/Alert";
+import { setAddAlertFunction } from "../services/alerts.services";
 
 export interface AlertType {
   alerts: any[];
@@ -22,6 +23,10 @@ const AlertsProvider = ({ children }: { children: ReactNode }) => {
   const dismissAlert = (id) => {
     setAlerts((prev) => prev.filter((alert) => alert.id !== id));
   };
+
+  useEffect(() => {
+    setAddAlertFunction(addAlert);
+  }, [addAlert]);
 
   return (
     <AlertsContext.Provider value={{ alerts, addAlert, dismissAlert }}>

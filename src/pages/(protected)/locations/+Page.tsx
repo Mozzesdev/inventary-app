@@ -17,6 +17,7 @@ import { Location } from "../../../interfaces/location";
 import FilesModal from "../../../components/FilesModal";
 import Pagination from "../../../components/Pagination";
 import { useAlert } from "../../../hooks/useAlert";
+import React from "react";
 
 const Page = () => {
   const [locationModal, setLocationModal] = useState(false);
@@ -107,7 +108,6 @@ const Page = () => {
 
   useEffect(() => {
     fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
   const tableOptions = (row) => {
@@ -189,6 +189,9 @@ const Page = () => {
             loading={loading}
             options={tableOptions}
           />
+          <span className="mt-3 block text-center text-sm text-[#8d96a0]">
+            Showing 1-{location?.data.length} of {location?.pagination.total} entries
+          </span>
         </div>
       </section>
     </>

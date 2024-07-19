@@ -1,5 +1,5 @@
 import { ChevronDownIcon } from "@heroicons/react/24/solid";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Checkbox from "./Checkbox";
 import { classNames } from "../../utils/classNames";
 
@@ -21,7 +21,6 @@ const Dropdown = ({
 
   useEffect(() => {
     onColumnChange && onColumnChange(selectedOptions);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedOptions]);
 
   const selectOption = (value: DropdownItem) => {

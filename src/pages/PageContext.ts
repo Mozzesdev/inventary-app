@@ -7,6 +7,7 @@ declare global {
         two_factor: any;
         app_secret: boolean;
       };
+      searchAll: any;
     }
   }
 }

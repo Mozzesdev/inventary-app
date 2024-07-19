@@ -1,12 +1,14 @@
 import TableRow from "./TableRow";
 import { ColumnTable } from "../interfaces/tables";
 import noDataImg from "../assets/no-data.svg";
+import React from "react";
 
 const Table = ({
   columns = [],
   data = [],
   loading = true,
   options = () => [],
+  onRowClick,
 }: TableInterface) => {
   const getRowData = (row: any, index: number) => {
     const finalColumns = columns.filter((col) => col.show);
@@ -51,9 +53,9 @@ const Table = ({
 
   return (
     <>
-      <div className="overflow-x-auto rounded-sm overflow-y-hidden">
+      <div className="overflow-x-auto overflow-y-hidden">
         <table className="w-full">
-          <thead className="text-sm bg-[#333a45] relative max-xl:text-xs">
+          <thead className="text-sm bg-[#333a45] rounded-md relative max-xl:text-xs border border-[#333a45]">
             <tr>
               {columns.map(
                 (col) =>
@@ -67,7 +69,7 @@ const Table = ({
                   )
               )}
               {options(null)?.length ? (
-                <th className="px-4 py-2 text-center text-neutral-200 font-inter-medium right-0 sticky bg-[#333a45]">
+                <th className="px-4 py-2 text-center text-neutral-200 font-inter-medium right-[-1px] sticky bg-[#333a45]">
                   Actions
                 </th>
               ) : (
@@ -75,13 +77,15 @@ const Table = ({
               )}
             </tr>
           </thead>
-          <tbody className="bg-[#21262d]">
+          <tbody className="bg-[#21262d] border border-neutral-700">
             {data.length > 0 ? (
               data.map((row, index) => (
                 <TableRow
                   key={row.id}
+                  row={row}
                   options={options(row)}
                   rowData={getRowData(row, index)}
+                  onClick={onRowClick}
                 />
               ))
             ) : (
@@ -138,4 +142,5 @@ export interface TableInterface {
   data?: any[];
   loading?: boolean;
   options?: (row: any) => any[];
+  onRowClick?: (row: any) => void;
 }

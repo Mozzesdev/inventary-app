@@ -1,5 +1,4 @@
-/* eslint-disable react-refresh/only-export-components */
-import {
+import React, {
   createContext,
   ReactNode,
   useCallback,
@@ -25,6 +24,7 @@ interface Options {
   label: string;
   action: () => any;
   icon?: any;
+  disabled?: boolean;
 }
 
 interface Config {
@@ -115,6 +115,12 @@ const DropdownProvider = ({ children }: { children: ReactNode }) => {
       <div
         className={`absolute z-[100] ${open ? "block" : "hidden"}`}
         ref={drop}
+        style={{
+          minWidth:
+            dropdownToggle?.current && config.align === "default"
+              ? `${dropdownToggle.current.offsetWidth}px`
+              : `auto`,
+        }}
       >
         <div
           onClick={(e) => e.stopPropagation()}
@@ -127,19 +133,21 @@ const DropdownProvider = ({ children }: { children: ReactNode }) => {
           aria-labelledby="menu-button"
           tabIndex={-1}
         >
-          <div className="py-1 text-right" role="none">
+          <div className="text-left" role="none">
             {options?.map((option) => (
-              <a
+              <button
                 key={option.label}
-                className="block px-4 py-1 text-xs text-neutral-300 cursor-pointer hover:text-gray-300 hover:bg-[#2e353f]"
+                className="block w-full px-4 py-1.5 text-xs text-neutral-300 cursor-pointer hover:text-gray-400 hover:bg-[#2e353f] disabled:pointer-events-none disabled:!bg-[#2b313a] disabled:!text-gray-400"
                 role="menuitem"
+                disabled={option.disabled}
                 onClick={() => {
+                  if (option.disabled) return;
                   option.action();
                   closeDropdown();
                 }}
               >
                 {option.label}
-              </a>
+              </button>
             ))}
           </div>
         </div>
