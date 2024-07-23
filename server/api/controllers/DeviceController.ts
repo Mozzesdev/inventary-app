@@ -1,5 +1,9 @@
 import { Request, Response } from "express";
-import { validateDevice, validatePartialDevice } from "../schemas/devices.js";
+import {
+  validateDevice,
+  validateDeviceFiles,
+  validatePartialDevice,
+} from "../schemas/devices.js";
 
 export class DeviceController {
   model: any;
@@ -62,7 +66,31 @@ export class DeviceController {
   };
 
   getMaintenances = async (req: Request, res: Response) => {
-    const { statusCode, ...result } = await this.model.getMaintenances(req.query);
+    const { statusCode, ...result } = await this.model.getMaintenances(
+      req.query
+    );
     res.status(statusCode).json(result);
+  };
+
+  deleteFile = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const { statusCode, ...result }: any = await this.model.deleteFile({ id });
+
+    res.status(statusCode).send(result);
+  };
+
+  addFiles = async (req: Request, res: Response) => {
+    const validated = validateDeviceFiles(req.body);
+
+    if (!validated.success)
+      return res
+        .status(400)
+        .json({ error: JSON.parse(validated.error.message) });
+
+    const { statusCode, ...result } = await this.model.addFiles({
+      input: validated.data,
+    });
+
+    res.status(statusCode).send(result);
   };
 }

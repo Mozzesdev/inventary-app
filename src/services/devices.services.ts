@@ -34,11 +34,21 @@ export const deleteDevice = async (id: string): Promise<AxiosResponse<any>> => {
   return await axiosInstance.delete(`/devices/${id}`);
 };
 
+export const deleteDeviceFile = async (
+  id: string
+): Promise<AxiosResponse<any>> => {
+  return await axiosInstance.delete(`/devices/files/${id}`);
+};
+
+export const addDeviceFiles = async (body: any): Promise<AxiosResponse<any>> => {
+  return await axiosInstance.post(`/devices/files`, body);
+};
+
 export const getDevicesColumns = (): ColumnTable[] => [
   {
     name: "Device",
     show: true,
-    value: ["device"],
+    value: ["name"],
     index: false,
     isDate: false,
   },
@@ -140,7 +150,7 @@ export interface FetchDevicesProps {
 
 export const defaultDevicesValues: Device = {
   note: "",
-  device: "",
+  name: "",
   type: "",
   brand: "",
   location_id: "",

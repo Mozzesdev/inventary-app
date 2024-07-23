@@ -80,7 +80,7 @@ const MaintenanceModal = ({ open, closeModal, deviceId, suppliers }: any) => {
           <span className="text-xl font-inter-medium">
             Maintenance of{" "}
             <span className="text-neutral-400 font-inter-bold">
-              {device.device}
+              {device.name}
             </span>
           </span>
           <small className="text-sm text-[#8d96a0] mt-1">
@@ -89,7 +89,7 @@ const MaintenanceModal = ({ open, closeModal, deviceId, suppliers }: any) => {
           <hr className="my-3 h-[1px] bg-[#30363d] border-0" />
           <span className="text-base text-neutral-400">Details:</span>
           <div className="mb-10 grid grid-cols-5 gap-4 border border-[#30363d] px-2 py-1 rounded-md mt-2 text-sm">
-            <span className="mx-auto">{device.device ?? ''}</span>
+            <span className="mx-auto">{device.name ?? ''}</span>
             <span className="mx-auto">{device.location?.name ?? ''}</span>
             <span className="mx-auto">{device.type ?? ''}</span>
             <span className="mx-auto">{device.purchase_date?.split("T")[0] ?? ''}</span>

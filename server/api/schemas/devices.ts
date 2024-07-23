@@ -9,8 +9,10 @@ const fileSchema = z.object({
   type: z.string().min(1),
 });
 
+const deviceFilesSchema = z.array(fileSchema).min(1);
+
 const deviceSchema = z.object({
-  device: z.string().min(1, { message: "Device name is required" }),
+  name: z.string().min(1, { message: "Device name is required" }),
   serial_number: z.string().min(1, { message: "Serial number is required" }),
   maintenance: z.boolean(),
   brand: z.string().min(1, { message: "Brand is required" }),
@@ -52,4 +54,8 @@ const validatePartialDevice = (input: any) => {
   return deviceSchema.partial().safeParse(input);
 };
 
-export { validateDevice, validatePartialDevice };
+const validateDeviceFiles = (input: any) => {
+  return deviceFilesSchema.safeParse(input);
+};
+
+export { validateDevice, validatePartialDevice, validateDeviceFiles };

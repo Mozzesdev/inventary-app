@@ -1,9 +1,8 @@
 import { Request, Response } from "express";
-import { Model } from "../interface/model";
 import { validatePartialRole, validateRole } from "../schemas/roles";
 
 export class RolesController {
-  model: Model;
+  model: any;
 
   constructor({ model }: any) {
     this.model = model;
@@ -12,6 +11,13 @@ export class RolesController {
   getAll = async (req: Request, res: Response) => {
     const { statusCode, ...result } = await this.model.getAll(req.query);
     res.status(statusCode).json(result);
+  };
+
+  deleteFile = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const { statusCode, ...result }: any = await this.model.deleteFile({ id });
+
+    res.status(statusCode).send(result);
   };
 
   create = async (req: Request, res: Response) => {

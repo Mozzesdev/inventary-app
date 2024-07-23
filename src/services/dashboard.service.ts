@@ -14,7 +14,7 @@ export const getDevicesColumns = (): ColumnTable[] => [
   {
     name: "Device",
     show: true,
-    value: ["device"],
+    value: ["name"],
     index: false,
     isDate: false,
   },

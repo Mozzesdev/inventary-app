@@ -281,7 +281,7 @@ class CrudModel {
       if (files?.length && this.withFiles) {
         const fileInserts = files.map((file: Record<string, any>) => {
           return mysqlConnection.query(
-            `INSERT INTO ${this.table}_files (${this.table}_id, name, url, size, created_at, type) VALUES (UUID_TO_BIN(?), ?, ?, ?, ?, ?);`,
+            `INSERT INTO ${this.table}_files (id, ${this.table}_id, name, url, size, created_at, type) VALUES (UUID_TO_BIN(UUID()), UUID_TO_BIN(?), ?, ?, ?, ?, ?);`,
             [uuid, file.name, file.url, file.size, file.created_at, file.type]
           );
         });
@@ -358,6 +358,80 @@ class CrudModel {
       return {
         success: false,
         message: `Error updating record in ${this.table}`,
+        statusCode: 500,
+      };
+    }
+  }
+
+  async deleteFile({ id }: { id: string }) {
+    if (!this.withFiles)
+      return {
+        success: false,
+        message: "This table cannot use files",
+        statusCode: 400,
+      };
+    try {
+      const mysqlConnection = await getConnection();
+
+      await mysqlConnection.query(
+        `DELETE FROM ${this.table}_files WHERE id = UUID_TO_BIN(?);`,
+        [id]
+      );
+
+      return {
+        success: true,
+        message: "Record deleted successfully",
+        statusCode: 200,
+      };
+    } catch (error) {
+      console.error(`Error deleting record from ${this.table}_files:`, error);
+      return {
+        success: false,
+        message: `Error deleting record from ${this.table}_files`,
+        statusCode: 500,
+      };
+    }
+  }
+
+  async addFiles({ input }: { input: any }) {
+    if (!this.withFiles) {
+      return {
+        success: false,
+        message: "This table cannot use files",
+        statusCode: 400,
+      };
+    }
+
+    try {
+      const mysqlConnection = await getConnection();
+
+      if (input?.length) {
+        const fileInserts = input.map((file: Record<string, any>) => {
+          return mysqlConnection.query(
+            `INSERT INTO ${this.table}_files (id, ${this.table}_id, name, url, size, created_at, type) VALUES (UUID_TO_BIN(UUID()), UUID_TO_BIN(?), ?, ?, ?, ?, ?);`,
+            [
+              file[`${this.table}_id`],
+              file.name,
+              file.url,
+              file.size,
+              file.created_at,
+              file.type,
+            ]
+          );
+        });
+        await Promise.all(fileInserts);
+      }
+
+      return {
+        success: true,
+        message: "Files added successfully",
+        statusCode: 200,
+      };
+    } catch (error) {
+      console.error(`Error adding files to ${this.table}_files:`, error);
+      return {
+        success: false,
+        message: `Error adding files to ${this.table}_files`,
         statusCode: 500,
       };
     }

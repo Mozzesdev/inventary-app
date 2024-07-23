@@ -139,6 +139,21 @@ const Page = () => {
     return [];
   };
 
+  const filesOptions = (file) => [
+    {
+      label: "Download",
+      action: () => {
+        const a = document.createElement("a");
+        a.href = file.url;
+        a.target = "_blank"
+        a.download = file.name || "download";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      },
+    },
+  ];
+
   return (
     <>
       <ConfirmDialog
@@ -160,6 +175,7 @@ const Page = () => {
       <FilesModal
         state={filesModal}
         hide={() => setFilesModal({ data: null, open: false })}
+        options={filesOptions}
       />
       <MaintenanceModal
         suppliers={suppliers}

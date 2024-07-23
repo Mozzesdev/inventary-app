@@ -117,6 +117,21 @@ const Companies = () => {
     ];
   };
 
+  const filesOptions = (file) => [
+    {
+      label: "Download",
+      action: () => {
+        const a = document.createElement("a");
+        a.href = file.url;
+        a.target = "_blank";
+        a.download = file.name || "download";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      },
+    },
+  ];
+
   return (
     <>
       <ConfirmDialog
@@ -136,6 +151,7 @@ const Companies = () => {
       <FilesModal
         state={filesModal}
         hide={() => setFilesModal({ data: null, open: false })}
+        options={filesOptions}
       />
       <section className="px-10 max-sm:px-4 max-w-[1504px]">
         <div className="relative min-w-0 border border-[#30363d] p-5 rounded-md">
@@ -172,7 +188,7 @@ const Companies = () => {
               />
             </div>
           </div>
-          <hr className="my-4 h-[1px] border-0 bg-[#30363db3]"/>
+          <hr className="my-4 h-[1px] border-0 bg-[#30363db3]" />
           <Table
             columns={companiesColumns}
             data={companies?.data ?? []}
@@ -180,7 +196,8 @@ const Companies = () => {
             options={tableOptions}
           />
           <span className="mt-3 block text-center text-sm text-[#8d96a0]">
-            Showing 1-{companies?.data.length} of {companies?.pagination.total} entries
+            Showing 1-{companies?.data.length} of {companies?.pagination.total}{" "}
+            entries
           </span>
         </div>
       </section>

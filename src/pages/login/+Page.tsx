@@ -8,6 +8,7 @@ import TwoFactorDialog from "./TwoFactorDialog";
 import { useState } from "react";
 import { useAlert } from "../../hooks/useAlert";
 import React from "react";
+import Spinner from "../../components/Spinner";
 
 interface AuthValues {
   email: string;
@@ -17,6 +18,7 @@ interface AuthValues {
 const Page = () => {
   const { addAlert } = useAlert();
   const [twoFactor, setTwoFactor] = useState(false);
+  const [isSubmitting, setSubmitting] = useState(false);
   const [user, setUser] = useState({});
   const initialValues = {
     email: "",
@@ -25,7 +27,7 @@ const Page = () => {
 
   const handleLogin = async (
     values: AuthValues,
-    { setSubmitting, resetForm }: FormikHelpers<AuthValues>
+    { resetForm }: FormikHelpers<AuthValues>
   ) => {
     try {
       setSubmitting(true);
@@ -36,14 +38,13 @@ const Page = () => {
         setUser(data.data);
       } else {
         await navigate("/dashboard");
+        resetForm();
         addAlert({
           message: "Login successful",
           severity: "success",
           timeout: 4,
         });
       }
-      resetForm();
-      setSubmitting(false);
     } catch (error: any) {
       console.log(error);
       addAlert({
@@ -51,6 +52,8 @@ const Page = () => {
         severity: "error",
         timeout: 4,
       });
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -61,7 +64,14 @@ const Page = () => {
         hide={() => setTwoFactor(false)}
         user={user}
       />
-      <div className="h-full max-w-xs mx-auto text-center">
+      <div className="h-full max-w-xs mx-auto text-center relative">
+        {isSubmitting ? (
+          <div className="fixed inset-0 flex items-center justify-center z-10 bg-[#0000004b]">
+            <Spinner />
+          </div>
+        ) : (
+          ""
+        )}
         <img src={logo} alt="logo" className="w-12 h-auto block mx-auto py-8" />
         <h1 className="block text-2xl mb-3 font-inter">Sign in to Inventary</h1>
         <Formik

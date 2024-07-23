@@ -15,6 +15,13 @@ export class UserController {
     this.model = model;
   }
 
+  deleteFile = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const { statusCode, ...result }: any = await this.model.deleteFile({ id });
+
+    res.status(statusCode).send(result);
+  };
+
   getAll = async (req: Request, res: Response) => {
     const { name } = req.query;
     const { statusCode, ...result } = await this.model.getAll({ name });

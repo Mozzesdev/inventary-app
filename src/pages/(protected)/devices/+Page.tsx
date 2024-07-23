@@ -7,8 +7,10 @@ import Button from "../../../components/Button";
 import Pagination from "../../../components/Pagination";
 import Table from "../../../components/Table";
 import {
+  addDeviceFiles,
   defaultDevicesValues,
   deleteDevice,
+  deleteDeviceFile,
   FetchDevices,
   getDevices,
   getDevicesColumns,
@@ -19,6 +21,8 @@ import { Options } from "../../../components/Select";
 import { getSuppliers } from "../../../services/suppliers.services";
 import { usePageContext } from "vike-react/usePageContext";
 import MaintenanceModal from "./MaintenanceModal";
+import { useAlert } from "../../../hooks/useAlert";
+import { uploadFile } from "../../../services/files.services";
 
 const Page = () => {
   const { urlParsed } = usePageContext();
@@ -38,12 +42,14 @@ const Page = () => {
     id: "",
     open: false,
   });
+  const { addAlert } = useAlert();
 
   const fetchData = async (query = "") => {
     setLoading(true);
     try {
       const { data } = await getDevices({ query, page });
       setDevices(data);
+      return data;
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
@@ -159,6 +165,99 @@ const Page = () => {
     ];
   };
 
+  const filesOptions = (file) => [
+    {
+      label: "Download",
+      action: () => {
+        const a = document.createElement("a");
+        a.href = file.url;
+        a.target = "_blank";
+        a.download = file.name || "download";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      },
+    },
+    {
+      label: "Delete",
+      action: async () => {
+        try {
+          const { data } = await deleteDeviceFile(file.id);
+          const allDevices = await fetchData();
+          const devi: any = allDevices?.data.find((dev) => dev.id === file.device_id);
+          setFilesModal({
+            data: devi,
+            open: true,
+          });
+          addAlert({
+            message: data.message,
+            severity: "success",
+            timeout: 5,
+          });
+        } catch (error: any) {
+          console.log(error);
+          addAlert({
+            message: error.response.data.message,
+            severity: "error",
+            timeout: 5,
+          });
+        }
+      },
+    },
+  ];
+
+  const uploadFiles = async (files: File[]) => {
+    if (!files?.length) {
+      return;
+    }
+    const form = new FormData();
+
+    for (let i = 0; i < files.length; i++) {
+      form.append("files", files[i]);
+    }
+
+    try {
+      const { data } = await uploadFile(form);
+      return data;
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
+  };
+
+  const addNewFile = async (values: any, id: string) => {
+    try {
+      const files = await uploadFiles(values);
+      const finalFiles = files.data.map((file: any) => ({
+        ...file,
+        device_id: id,
+      }));
+      const { data } = await addDeviceFiles(finalFiles);
+      const allDevices = await fetchData();
+      const devi: any = allDevices?.data.find((dev) => dev.id === id);
+      setFilesModal({
+        data: devi,
+        open: true,
+      });
+      addAlert({
+        message: data.message,
+        severity: "success",
+        timeout: 5,
+      });
+    } catch (error: any) {
+      console.log(error);
+      addAlert({
+        message: error.response.data.message,
+        severity: "error",
+        timeout: 5,
+      });
+    }
+  };
+
+  const closeFilesModal = () => {
+    setFilesModal({ data: null, open: false });
+  };
+
   return (
     <>
       <ConfirmDialog
@@ -179,7 +278,9 @@ const Page = () => {
       />
       <FilesModal
         state={filesModal}
-        hide={() => setFilesModal({ data: null, open: false })}
+        hide={closeFilesModal}
+        options={filesOptions}
+        add={addNewFile}
       />
       <MaintenanceModal
         suppliers={suppliers}
@@ -230,7 +331,8 @@ const Page = () => {
             options={tableOptions}
           />
           <span className="mt-3 block text-center text-sm text-[#8d96a0]">
-            Showing 1-{devices?.data.length} of {devices?.pagination.total} entries
+            Showing 1-{devices?.data?.length} of {devices?.pagination.total}{" "}
+            entries
           </span>
         </div>
       </section>

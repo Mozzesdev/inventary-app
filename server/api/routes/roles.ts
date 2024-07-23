@@ -13,6 +13,8 @@ export const createRolesRouter: ({ model }: any) => Router = ({
     rolesRouter.get("/", rolesController.getAll);
   
     rolesRouter.get("/:id", rolesController.getById);
+
+    rolesRouter.delete("/files/:id", rolesController.deleteFile);
   
     rolesRouter.delete("/:id", rolesController.delete);
   

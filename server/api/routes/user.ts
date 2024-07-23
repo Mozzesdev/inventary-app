@@ -15,6 +15,8 @@ export const createUsersRouter: ({ model }: any) => Router = ({
 
   userRouter.get("/:id", authenticateToken, userController.getById);
 
+  userRouter.delete("/files/:id", userController.deleteFile);
+
   userRouter.delete("/:id", authenticateToken, userController.delete);
 
   userRouter.patch("/:id", authenticateToken, userController.update);

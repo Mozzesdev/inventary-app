@@ -3,7 +3,7 @@ import { Supplier } from "./suppliers";
 
 export interface Device {
   id?: string;
-  device: string;
+  name: string;
   location?: Location;
   location_id?: string;
   supplier_id?: string;

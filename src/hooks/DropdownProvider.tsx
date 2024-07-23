@@ -54,15 +54,16 @@ const DropdownProvider = ({ children }: { children: ReactNode }) => {
     setConfig(config);
     dropdownToggle.current = target;
     if (open) return closeDropdown();
-
+    
     setOptions(options);
-
+    
     Promise.resolve().then(() => positionDropdown(config));
-
+    
     setOpen(true);
   };
 
   const closeDropdown = () => {
+    setOptions([])
     setOpen(false);
   };
 
@@ -113,7 +114,7 @@ const DropdownProvider = ({ children }: { children: ReactNode }) => {
       value={{ open, openDropdown, closeDropdown, setOptions }}
     >
       <div
-        className={`absolute z-[100] ${open ? "block" : "hidden"}`}
+        className={`absolute z-[500] ${open ? "block" : "hidden"}`}
         ref={drop}
         style={{
           minWidth:

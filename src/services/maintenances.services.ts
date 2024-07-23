@@ -26,7 +26,7 @@ export const getMaintenanceDevicesColumns = (): ColumnTable[] => [
   {
     name: "Device",
     show: true,
-    value: ["device"],
+    value: ["name"],
     index: false,
     isDate: false,
   },

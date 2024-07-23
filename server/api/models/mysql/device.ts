@@ -10,7 +10,7 @@ class DeviceModel extends CrudModel {
     super({
       table: "device",
       searchFields: [
-        "device",
+        "name",
         "location_id",
         "serial_number",
         "maintenance",

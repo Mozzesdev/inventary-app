@@ -94,7 +94,7 @@ const DeviceModal = ({
         enableReinitialize
         onSubmit={handleSubmit}
         validationSchema={Yup.object({
-          device: Yup.string().required("Device is required"),
+          name: Yup.string().required("Device name is required"),
           serial_number: Yup.string().required("Serial number is required"),
           maintenance: Yup.boolean().required("Maintenance status is required"),
           brand: Yup.string().required("Brand is required"),
@@ -132,11 +132,11 @@ const DeviceModal = ({
               )}
               <div className="grid grid-cols-3 gap-y-9 gap-x-6 max-sm:grid-cols-2 max-[450px]:grid-cols-1">
                 <Input
-                  label="Device"
+                  label="Name"
                   type="text"
                   placeholder="Enter the device name..."
-                  name="device"
-                  id="device"
+                  name="name"
+                  id="name"
                   containerClassName="!my-0"
                 />
                 <Input

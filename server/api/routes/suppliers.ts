@@ -14,6 +14,8 @@ export const createSuppliersRouter: ({ model }: any) => Router = ({
 
   suppliersRouter.get("/:id", companiesController.getById);
 
+  suppliersRouter.delete("/files/:id", companiesController.deleteFile);
+  
   suppliersRouter.delete("/:id", companiesController.delete);
 
   suppliersRouter.patch("/:id", companiesController.update);

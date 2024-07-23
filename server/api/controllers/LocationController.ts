@@ -3,10 +3,9 @@ import {
   validateLocation,
   validatePartialLocation,
 } from "../schemas/location.js";
-import { Model } from "../interface/model.js";
 
 export class LocationController {
-  model: Model;
+  model: any;
 
   constructor({ model }: any) {
     this.model = model;
@@ -15,6 +14,13 @@ export class LocationController {
   getAll = async (req: Request, res: Response) => {
     const result = await this.model.getAll(req.query);
     res.status(201).json(result);
+  };
+
+  deleteFile = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const { statusCode, ...result }: any = await this.model.deleteFile({ id });
+
+    res.status(statusCode).send(result);
   };
 
   create = async (req: Request, res: Response) => {

@@ -1,9 +1,8 @@
 import { Request, Response } from "express";
-import { Model } from "../interface/model.js";
 import { validatePartialSupplier, validateSupplier } from "../schemas/supplier.js";
 
 export class SuppliersController {
-  model: Model;
+  model: any;
 
   constructor({ model }: any) {
     this.model = model;
@@ -12,6 +11,13 @@ export class SuppliersController {
   getAll = async (req: Request, res: Response) => {
     const result = await this.model.getAll(req.query);
     res.status(201).json(result);
+  };
+
+  deleteFile = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const { statusCode, ...result }: any = await this.model.deleteFile({ id });
+
+    res.status(statusCode).send(result);
   };
 
   create = async (req: Request, res: Response) => {
