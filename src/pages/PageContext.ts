@@ -6,6 +6,8 @@ declare global {
         id: string;
         two_factor: any;
         app_secret: boolean;
+        role: any;
+        isAdmin: boolean;
       };
       searchAll: any;
     }

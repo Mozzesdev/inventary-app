@@ -15,25 +15,34 @@ import { navigate } from "vike/client/router";
 import { Link } from "./Link";
 import { classNames } from "../../utils/classNames";
 import React from "react";
+import { usePageContext } from "vike-react/usePageContext";
 
 const Sidebar = ({ show, hide }: any) => {
   const [searchValue, setSearchValue] = useState("");
   const [navSelected, setNavSelected] = useState<string | null>(null);
 
+  const { user } = usePageContext();
+
   const nestedRoutes = [
     {
       label: "Settings",
       icon: Cog6ToothIcon,
-      children: [
-        {
-          href: "/settings/security",
-          label: "Security",
-        },
-        {
-          href: "/settings/users",
-          label: "Users",
-        },
-      ],
+      children: (() => {
+        const childrens = [
+          {
+            href: "/settings/security",
+            label: "Security",
+          },
+        ];
+
+        if (user?.isAdmin) {
+          childrens.push({
+            href: "/settings/users",
+            label: "Users",
+          });
+        }
+        return childrens;
+      })(),
     },
     {
       label: "Log out",

@@ -1,16 +1,24 @@
 import { NextFunction, Request, Response } from "express";
 import { renderPage } from "vike/server";
+import userModel from "../api/models/mysql/users";
 
 const renderMiddleware = async (
   req: Request | any,
   res: Response,
   next: NextFunction
 ) => {
+  const { data } = await userModel.getById({ id: req.user.id });
+  const user = {
+    ...req.user,
+    isAdmin: data?.role.name.toLowerCase() === "admin",
+  };
+
   const pageContextInit = {
     urlOriginal: req.originalUrl,
     headersOriginal: req.headers,
-    user: req.user,
+    user,
   };
+
   const pageContext = await renderPage(pageContextInit);
 
   const { httpResponse } = pageContext;

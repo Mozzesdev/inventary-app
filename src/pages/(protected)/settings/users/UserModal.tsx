@@ -133,6 +133,7 @@ const UserModal = ({ isOpen, closeModal, fetchData, data, roles }: any) => {
                 type="password"
                 by="password"
                 name="password"
+                placeholder="Enter the password..."
                 id="password"
                 containerClassName="!my-0"
               />
