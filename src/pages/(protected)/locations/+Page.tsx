@@ -2,8 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { PlusIcon } from "@heroicons/react/24/solid";
 import {
+  addLocationFiles,
   defaultLocationValues,
   deleteLocation,
+  deleteLocationFile,
   FetchLocation,
   getLocationColumns,
   getLocations,
@@ -18,6 +20,8 @@ import FilesModal from "../../../components/FilesModal";
 import Pagination from "../../../components/Pagination";
 import { useAlert } from "../../../hooks/useAlert";
 import React from "react";
+import { uploadFile } from "../../../services/files.services";
+import axiosInstance from "../../../interceptor";
 
 const Page = () => {
   const [locationModal, setLocationModal] = useState(false);
@@ -38,6 +42,7 @@ const Page = () => {
     try {
       const { data } = await getLocations({ query, page });
       setLocation(data);
+      return data;
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
@@ -130,17 +135,106 @@ const Page = () => {
   const filesOptions = (file) => [
     {
       label: "Download",
-      action: () => {
-        const a = document.createElement("a");
-        a.href = file.url;
-        a.target = "_blank"
-        a.download = file.name || "download";
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
+      action: async () => {
+        try {
+          const { data } = await axiosInstance.post(
+            "/proxy/download/",
+            {
+              url: file.url,
+            },
+            { responseType: "blob" }
+          );
+          const url = window.URL.createObjectURL(new Blob([data]));
+          const a = document.createElement("a");
+          a.style.display = "none";
+          a.href = url;
+          a.download = file.name;
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url);
+          document.body.removeChild(a);
+        } catch (error) {
+          console.error("Error downloading the image:", error);
+        }
+      },
+    },
+    {
+      label: "Delete",
+      action: async () => {
+        try {
+          const { data } = await deleteLocationFile(file.id);
+          const allLocations = await fetchData();
+          const loc: any = allLocations?.data.find(
+            (dev) => dev.id === file.location_id
+          );
+          setFilesModal({
+            data: loc,
+            open: true,
+          });
+          addAlert({
+            message: data.message,
+            severity: "success",
+            timeout: 5,
+          });
+        } catch (error: any) {
+          console.log(error);
+          addAlert({
+            message: error.response.data.message,
+            severity: "error",
+            timeout: 5,
+          });
+        }
       },
     },
   ];
+
+  const uploadFiles = async (files: File[]) => {
+    if (!files?.length) {
+      return;
+    }
+    const form = new FormData();
+
+    for (let i = 0; i < files.length; i++) {
+      form.append("files", files[i]);
+    }
+
+    try {
+      const { data } = await uploadFile(form);
+      return data;
+    } catch (error) {
+      console.log(error);
+      return error;
+    }
+  };
+
+  const addNewFile = async (values: any, id: string) => {
+    try {
+      const files = await uploadFiles(values);
+      const finalFiles = files.data.map((file: any) => ({
+        ...file,
+        location_id: id,
+      }));
+      const { data } = await addLocationFiles(finalFiles);
+      const allLocations = await fetchData();
+      const loc: any = allLocations?.data.find((dev) => dev.id === id);
+      setFilesModal({
+        data: loc,
+        open: true,
+      });
+      addAlert({
+        message: data.message,
+        severity: "success",
+        timeout: 5,
+      });
+    } catch (error: any) {
+      console.log(error);
+      addAlert({
+        message: error.response.data.message,
+        severity: "error",
+        timeout: 5,
+      });
+    }
+  };
 
   return (
     <>
@@ -162,6 +256,7 @@ const Page = () => {
         state={filesModal}
         hide={() => setFilesModal({ data: null, open: false })}
         options={filesOptions}
+        add={addNewFile}
       />
       <section className="px-10 max-sm:px-4 max-w-[1504px]">
         <div className="relative min-w-0 border border-[#30363d] p-5 rounded-md">
@@ -206,7 +301,8 @@ const Page = () => {
             options={tableOptions}
           />
           <span className="mt-3 block text-center text-sm text-[#8d96a0]">
-            Showing 1-{location?.data.length} of {location?.pagination.total} entries
+            Showing 1-{location?.data.length} of {location?.pagination.total}{" "}
+            entries
           </span>
         </div>
       </section>

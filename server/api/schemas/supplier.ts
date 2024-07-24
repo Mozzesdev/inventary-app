@@ -5,7 +5,7 @@ const fileSchema = z.object({
   url: z.string().min(1),
   size: z.string(),
   created_at: z.string(),
-  location_id: z.string().optional(),
+  supplier_id: z.string().optional(),
   type: z.string().min(1),
 });
 
@@ -25,12 +25,18 @@ const supplierSchema = z.object({
   files: z.array(fileSchema).min(0).optional(),
 });
 
+const supplierFilesSchema = z.array(fileSchema).min(1);
+
 const validateSupplier = (input: any) => {
   return supplierSchema.safeParse(input);
+};
+
+const validateSupplierFiles = (input: any) => {
+  return supplierFilesSchema.safeParse(input);
 };
 
 const validatePartialSupplier = (input: any) => {
   return supplierSchema.partial().safeParse(input);
 };
 
-export { validateSupplier, validatePartialSupplier };
+export { validateSupplier, validatePartialSupplier, validateSupplierFiles };

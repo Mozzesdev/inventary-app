@@ -23,6 +23,7 @@ import { usePageContext } from "vike-react/usePageContext";
 import MaintenanceModal from "./MaintenanceModal";
 import { useAlert } from "../../../hooks/useAlert";
 import { uploadFile } from "../../../services/files.services";
+import axiosInstance from "../../../interceptor";
 
 const Page = () => {
   const { urlParsed } = usePageContext();
@@ -168,14 +169,27 @@ const Page = () => {
   const filesOptions = (file) => [
     {
       label: "Download",
-      action: () => {
-        const a = document.createElement("a");
-        a.href = file.url;
-        a.target = "_blank";
-        a.download = file.name || "download";
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
+      action: async () => {
+        try {
+          const { data } = await axiosInstance.post(
+            "/proxy/download/",
+            {
+              url: file.url,
+            },
+            { responseType: "blob" }
+          );
+          const url = window.URL.createObjectURL(new Blob([data]));
+          const a = document.createElement("a");
+          a.style.display = "none";
+          a.href = url;
+          a.download = file.name;
+          document.body.appendChild(a);
+          a.click();
+          window.URL.revokeObjectURL(url);
+          document.body.removeChild(a);
+        } catch (error) {
+          console.error("Error downloading the image:", error);
+        }
       },
     },
     {

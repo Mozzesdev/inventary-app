@@ -15,6 +15,7 @@ import userModel from "./models/mysql/users.js";
 import morgan from "morgan";
 import { createRolesRouter } from "./routes/roles.js";
 import roleModel from "./models/mysql/role.js";
+import axios from "axios";
 
 const apiRouter: Router = Router();
 
@@ -35,6 +36,21 @@ apiRouter.get("/", (_req, res) => {
   res.redirect("/");
 });
 
+apiRouter.post("/proxy/download", authenticateToken, async (req, res) => {
+  const { url } = req.body;
+
+  try {
+    const response = await axios({
+      url,
+      responseType: 'stream',
+    });
+
+    response.data.pipe(res);
+  } catch (err) {
+    res.status(500).send('Error downloading the image');
+  }
+});
+
 apiRouter.use("/location", authenticateToken, locationRouter);
 
 apiRouter.use("/user", usersRouter);
@@ -48,5 +64,6 @@ apiRouter.use("/files", authenticateToken, filesRouter);
 apiRouter.use("/dashboard", authenticateToken, dashboardRouter);
 
 apiRouter.use("/role", authenticateToken, roleRouter);
+
 
 export default apiRouter;

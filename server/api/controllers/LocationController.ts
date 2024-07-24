@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import {
   validateLocation,
+  validateLocationFiles,
   validatePartialLocation,
 } from "../schemas/location.js";
 
@@ -67,5 +68,20 @@ export class LocationController {
     });
 
     res.status(201).send(result);
+  };
+
+  addFiles = async (req: Request, res: Response) => {
+    const validated = validateLocationFiles(req.body);
+
+    if (!validated.success)
+      return res
+        .status(400)
+        .json({ error: JSON.parse(validated.error.message) });
+
+    const { statusCode, ...result } = await this.model.addFiles({
+      input: validated.data,
+    });
+
+    res.status(statusCode).send(result);
   };
 }

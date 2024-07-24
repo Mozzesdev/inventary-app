@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { validatePartialSupplier, validateSupplier } from "../schemas/supplier.js";
+import { validatePartialSupplier, validateSupplier, validateSupplierFiles } from "../schemas/supplier.js";
 
 export class SuppliersController {
   model: any;
@@ -62,5 +62,20 @@ export class SuppliersController {
     });
 
     res.status(201).send(result);
+  };
+
+  addFiles = async (req: Request, res: Response) => {
+    const validated = validateSupplierFiles(req.body);
+
+    if (!validated.success)
+      return res
+        .status(400)
+        .json({ error: JSON.parse(validated.error.message) });
+
+    const { statusCode, ...result } = await this.model.addFiles({
+      input: validated.data,
+    });
+
+    res.status(statusCode).send(result);
   };
 }

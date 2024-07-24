@@ -34,6 +34,18 @@ export const deleteSupplier = async (
   return await axiosInstance.delete(`/suppliers/${id}`);
 };
 
+export const deleteSupplierFile = async (
+  id: string
+): Promise<AxiosResponse<any>> => {
+  return await axiosInstance.delete(`/suppliers/files/${id}`);
+};
+
+export const addSupplierFiles = async (
+  body: any
+): Promise<AxiosResponse<any>> => {
+  return await axiosInstance.post(`/suppliers/files`, body);
+};
+
 export const getSuppliersColumns = (): ColumnTable[] => [
   {
     name: "Name",

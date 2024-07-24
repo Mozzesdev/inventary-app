@@ -1,4 +1,5 @@
 import { usePageContext } from "vike-react/usePageContext";
+import React from "react";
 
 export default function Page() {
   const { is404 } = usePageContext();

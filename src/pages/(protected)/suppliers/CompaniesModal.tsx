@@ -11,6 +11,7 @@ import {
 } from "../../../services/suppliers.services";
 import Spinner from "../../../components/Spinner";
 import { uploadFile } from "../../../services/files.services";
+import React from "react";
 
 const CompaniesModal = ({ companyModal, closeModal, fetchData, data }: any) => {
   const handleSubmit = async (
@@ -175,22 +176,28 @@ const CompaniesModal = ({ companyModal, closeModal, fetchData, data }: any) => {
                 label="Notes"
                 placeholder="Write some notes here..."
               />
-              <label
-                className="block mb-2 text-sm font-medium text-left text-neutral-400"
-                htmlFor="files"
-              >
-                Upload multiple files
-              </label>
-              <input
-                className="max-w-52 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-                id="files"
-                type="file"
-                name="files"
-                multiple
-                onChange={async (e) =>
-                  await setFieldValue("files", e.currentTarget.files)
-                }
-              />
+              {!data.id ? (
+              <>
+                <label
+                  className="block mb-2 text-sm font-medium text-left text-neutral-400"
+                  htmlFor="files"
+                >
+                  Upload multiple files
+                </label>
+                <input
+                  className="max-w-52 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                  id="files"
+                  type="file"
+                  name="files"
+                  multiple
+                  onChange={async (e) =>
+                    await setFieldValue("files", e.currentTarget.files)
+                  }
+                />
+              </>
+            ) : (
+              ""
+            )}
               <div className="flex gap-3 mt-4 justify-center">
                 <Button className="py-1 px-4" submit disabled={isSubmitting}>
                   {data.id ? "Edit" : "Create"}

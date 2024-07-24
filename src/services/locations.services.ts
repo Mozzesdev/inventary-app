@@ -34,6 +34,18 @@ export const deleteLocation = async (
   return await axiosInstance.delete(`/location/${id}`);
 };
 
+export const deleteLocationFile = async (
+  id: string
+): Promise<AxiosResponse<any>> => {
+  return await axiosInstance.delete(`/location/files/${id}`);
+};
+
+export const addLocationFiles = async (
+  body: any
+): Promise<AxiosResponse<any>> => {
+  return await axiosInstance.post(`/location/files`, body);
+};
+
 export const getLocationColumns = (): ColumnTable[] => [
   {
     name: "Location Name",

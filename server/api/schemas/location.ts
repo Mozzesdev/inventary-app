@@ -9,6 +9,8 @@ const fileSchema = z.object({
   type: z.string().min(1),
 });
 
+const locationFilesSchema = z.array(fileSchema).min(1);
+
 const locationSchema = z.object({
   name: z.string().min(1, { message: "Location name is required" }),
   manager: z.string().min(1, { message: "User is required" }),
@@ -28,8 +30,12 @@ const validateLocation = (input: any) => {
   return locationSchema.safeParse(input);
 };
 
+const validateLocationFiles = (input: any) => {
+  return locationFilesSchema.safeParse(input);
+};
+
 const validatePartialLocation = (input: any) => {
   return locationSchema.partial().safeParse(input);
 };
 
-export { validateLocation, validatePartialLocation };
+export { validateLocation, validatePartialLocation, validateLocationFiles };

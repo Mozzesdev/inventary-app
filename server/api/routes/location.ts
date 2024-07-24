@@ -16,6 +16,8 @@ export const createLocationRouter: ({ model }: any) => Router = ({
 
   locationRouter.delete("/files/:id", locationController.deleteFile);
 
+  locationRouter.post("/files", locationController.addFiles);
+
   locationRouter.delete("/:id", locationController.delete);
 
   locationRouter.patch("/:id", locationController.update);
