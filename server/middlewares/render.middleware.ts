@@ -7,11 +7,15 @@ const renderMiddleware = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { data } = await userModel.getById({ id: req.user.id });
-  const user = {
-    ...req.user,
-    isAdmin: data?.role.name.toLowerCase() === "admin",
-  };
+  let user = req.user;
+
+  if (req.user) {
+    const { data } = await userModel.getById({ id: req.user.id });
+    user = {
+      ...req.user,
+      isAdmin: data?.role?.name?.toLowerCase() === "admin",
+    };
+  }
 
   const pageContextInit = {
     urlOriginal: req.originalUrl,
