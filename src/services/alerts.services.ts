@@ -8,5 +8,4 @@ export const addAlert = (alert) => {
   if (addAlertFunction) {
     addAlertFunction(alert);
   }
-  console.log("alerting");
 };

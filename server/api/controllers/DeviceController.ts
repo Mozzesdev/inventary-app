@@ -55,8 +55,6 @@ export class DeviceController {
 
     const { id } = req.params;
 
-    console.log(validated.data);
-
     const { statusCode, ...result }: any = await this.model.update({
       id,
       input: validated.data,
