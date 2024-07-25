@@ -29,7 +29,7 @@ const Page = () => {
   const { urlParsed } = usePageContext();
   const [deviceModal, setDeviceModal] = useState(false);
   const [filesModal, setFilesModal] = useState({ data: null, open: false });
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [confirmDialog, setConfirmDialog] = useState({ id: null, open: false });
   const [devices, setDevices] = useState<FetchDevices>();
   const [devicesColumns, setDevicesColumns] = useState(getDevicesColumns());

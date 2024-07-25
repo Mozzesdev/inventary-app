@@ -11,6 +11,7 @@ const Table = ({
   options = () => [],
   onRowClick,
 }: TableInterface) => {
+  console.log(loading);
   const getRowData = (row: any, index: number) => {
     const finalColumns = columns.filter((col) => col.show);
 

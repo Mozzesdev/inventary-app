@@ -103,7 +103,7 @@ const Page = () => {
     } catch (error) {
       console.error("Unexpected error:", error);
     } finally {
-      setLoading(false); // Asegurarse de que el estado de carga se desactive
+      setLoading(false);
     }
   }, []);
 
@@ -113,26 +113,23 @@ const Page = () => {
 
   return (
     <section className="px-10 max-sm:px-4 max-w-[1504px] relative">
-      {loading ? (
-        <div className="absolute inset-0 bg-[#00000038] grid place-items-center">
-          <Spinner />
-        </div>
-      ) : (
-        ""
-      )}
       <div className="grid grid-cols-4 gap-3 max-lg:grid-cols-3 max-md:grid-cols-2">
         <article className="border-[#30363d] border rounded-md p-4">
           <div className="flex justify-between items-center mb-4 text-[#aab5c1]">
             <span className="text-base font-inter-medium">Locations</span>
             <MapIcon width={20} />
           </div>
-          <p className="text-2xl font-inter-bold text-red-500">
-            {counters.location_count
-              ? counters.location_count > 9
-                ? counters.location_count
-                : `0${counters.location_count}`
-              : 0}
-          </p>
+          {loading ? (
+            <Spinner className="text-red-500" />
+          ) : (
+            <p className="text-2xl font-inter-bold text-red-500">
+              {counters.location_count
+                ? counters.location_count > 9
+                  ? counters.location_count
+                  : `0${counters.location_count}`
+                : 0}
+            </p>
+          )}
           <Link
             className="text-sm flex gap-2 group items-center hover:underline hover:text-[#9ba5b0] mt-4 text-[#aab5c1]"
             href="/locations"
@@ -146,13 +143,17 @@ const Page = () => {
             <span className="text-base font-inter-medium">Suppliers</span>
             <BuildingOffice2Icon width={20} />
           </div>
-          <p className="text-2xl font-inter-bold text-green-400">
-            {counters.supplier_count
-              ? counters.supplier_count > 9
-                ? counters.supplier_count
-                : `0${counters.supplier_count}`
-              : 0}
-          </p>
+          {loading ? (
+            <Spinner className="text-green-400" />
+          ) : (
+            <p className="text-2xl font-inter-bold text-green-400">
+              {counters.supplier_count
+                ? counters.supplier_count > 9
+                  ? counters.supplier_count
+                  : `0${counters.supplier_count}`
+                : 0}
+            </p>
+          )}
           <Link
             className="text-sm flex gap-2 group items-center hover:underline hover:text-[#9ba5b0] mt-4 text-[#aab5c1]"
             href="/suppliers"
@@ -166,13 +167,17 @@ const Page = () => {
             <span className="text-base font-inter-medium">Devices</span>
             <DeviceTabletIcon width={20} />
           </div>
-          <p className="text-2xl font-inter-bold text-blue-500">
-            {counters.devices_count
-              ? counters.devices_count > 9
-                ? counters.devices_count
-                : `0${counters.devices_count}`
-              : 0}
-          </p>
+          {loading ? (
+            <Spinner className="!text-blue-500" />
+          ) : (
+            <p className="text-2xl font-inter-bold text-blue-500">
+              {counters.devices_count
+                ? counters.devices_count > 9
+                  ? counters.devices_count
+                  : `0${counters.devices_count}`
+                : 0}
+            </p>
+          )}
           <Link
             className="text-sm flex gap-2 group items-center hover:underline hover:text-[#9ba5b0] mt-4 text-[#aab5c1]"
             href="/devices"
@@ -188,13 +193,18 @@ const Page = () => {
             </span>
             <ExclamationTriangleIcon width={20} />
           </div>
-          <p className="text-2xl font-inter-bold text-yellow-500">
-            {counters.maintenance_devices
-              ? counters.maintenance_devices > 9
-                ? counters.maintenance_devices
-                : `0${counters.maintenance_devices}`
-              : 0}
-          </p>
+          {loading ? (
+            <Spinner className="text-yellow-500" />
+          ) : (
+            <p className="text-2xl font-inter-bold text-yellow-500">
+              {counters.maintenance_devices
+                ? counters.maintenance_devices > 9
+                  ? counters.maintenance_devices
+                  : `0${counters.maintenance_devices}`
+                : 0}
+            </p>
+          )}
+
           <Link
             className="text-sm flex gap-2 group items-center hover:underline hover:text-[#9ba5b0] mt-4 text-[#aab5c1]"
             href="/devices/maintenance"

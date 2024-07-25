@@ -26,7 +26,7 @@ import axiosInstance from "../../../interceptor";
 const Page = () => {
   const [locationModal, setLocationModal] = useState(false);
   const [filesModal, setFilesModal] = useState({ data: null, open: false });
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [confirmDialog, setConfirmDialog] = useState({ id: null, open: false });
   const [location, setLocation] = useState<FetchLocation>();
   const [locationColumns, setLocationColumns] = useState(getLocationColumns());

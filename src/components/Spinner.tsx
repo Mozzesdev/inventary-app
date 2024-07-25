@@ -1,7 +1,10 @@
-const Spinner = () => {
+import React from "react";
+import { classNames } from "../../utils/classNames";
+
+const Spinner = ({ className = "" }: { className?: string }) => {
   return (
     <svg
-      className="text-gray-300 animate-spin"
+      className={classNames("text-gray-300 animate-spin", className)}
       viewBox="0 0 64 64"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

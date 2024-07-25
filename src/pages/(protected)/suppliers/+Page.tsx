@@ -24,7 +24,7 @@ import { uploadFile } from "../../../services/files.services";
 const Companies = () => {
   const [companyModal, setCompanyModal] = useState(false);
   const [filesModal, setFilesModal] = useState({ data: null, open: false });
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [confirmDialog, setConfirmDialog] = useState({ id: null, open: false });
   const [companies, setCompanies] = useState<FetchSuppliers>();
   const [companiesColumns, setCompaniesColumns] = useState(
