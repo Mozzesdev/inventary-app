@@ -28,6 +28,7 @@ const Page = () => {
     id: null,
     open: false,
   });
+  const [isLoading, setLoading] = useState(true);
   const [users, setUsers] = useState<any>();
   const [roles, setRoles] = useState<any>();
   const [roleModal, setRoleModal] = useState({
@@ -54,8 +55,9 @@ const Page = () => {
 
   const getData = async () => {
     try {
-      getAllUsers();
-      getAllRoles();
+      setLoading(true);
+      await getAllUsers();
+      await getAllRoles();
     } catch (error: any) {
       const message = error.response.data.message;
       console.log(error);
@@ -64,6 +66,8 @@ const Page = () => {
         severity: "error",
         timeout: 5,
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -217,14 +221,14 @@ const Page = () => {
           <article className="rounded-lg border border-solid border-[#30363d] overflow-hidden">
             <div className="bg-[#161b22] p-4">
               <Table
-                loading={false}
+                loading={isLoading}
                 columns={usersColumns}
                 data={users?.data ?? []}
                 options={userOptions}
               />
               <span className="mt-3 block text-center text-sm text-[#8d96a0]">
-                Showing 1-{users?.data?.length ?? 0} of {users?.pagination?.total}{" "}
-                entries
+                Showing 1-{users?.data?.length ?? 0} of{" "}
+                {users?.pagination?.total} entries
               </span>
             </div>
           </article>
@@ -251,14 +255,14 @@ const Page = () => {
           <article className="rounded-lg border border-solid border-[#30363d] overflow-hidden">
             <div className="bg-[#161b22] p-4">
               <Table
-                loading={false}
+                loading={isLoading}
                 columns={roleColumns}
                 data={roles?.data ?? []}
                 options={roleOptions}
               />
               <span className="mt-3 block text-center text-sm text-[#8d96a0]">
-                Showing 1-{roles?.data?.length ?? 0} of {roles?.pagination?.total}{" "}
-                entries
+                Showing 1-{roles?.data?.length ?? 0} of{" "}
+                {roles?.pagination?.total} entries
               </span>
             </div>
           </article>
