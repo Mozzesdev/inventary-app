@@ -22,9 +22,9 @@ const LocationModal = ({ locationModal, closeModal, fetchData, data }: any) => {
       setSubmitting(true);
       const files = await uploadFiles(values.files);
       if (data.id) {
-        await editLocation({ ...values, files: files.data });
+        await editLocation({ ...values, files: files?.data ?? [] });
       } else {
-        await createLocation({ ...values, files: files.data });
+        await createLocation({ ...values, files: files?.data ?? [] });
       }
       resetForm();
       closeModal();

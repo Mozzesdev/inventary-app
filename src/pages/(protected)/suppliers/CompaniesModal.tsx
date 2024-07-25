@@ -22,9 +22,9 @@ const CompaniesModal = ({ companyModal, closeModal, fetchData, data }: any) => {
       setSubmitting(true);
       const files = await uploadFiles(values.files);
       if (data.id) {
-        await editSupplier({ ...values, files: files.data });
+        await editSupplier({ ...values, files: files?.data ?? [] });
       } else {
-        await createSupplier({ ...values, files: files.data });
+        await createSupplier({ ...values, files: files?.data ?? [] });
       }
       resetForm();
       closeModal();
