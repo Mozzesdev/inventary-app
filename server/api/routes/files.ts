@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { FilesController } from "../controllers/FilesController.js";
+import { FilesController } from "../controllers/FilesController";
 import multer from "multer";
 
 export const createFilesRouter: () => Router = () => {

@@ -1,13 +1,13 @@
 import jwt from "jsonwebtoken";
-import getConnection from "../../db/mysql.js";
-import { ATTEMPT_TIMEOUT, JSW_KEY, MAX_ATTEMPTS } from "../../../config.js";
+import getMysqlPool from "../../db/mysql";
+import { ATTEMPT_TIMEOUT, JSW_KEY, MAX_ATTEMPTS } from "../../../config";
 import * as OTPAuth from "otpauth";
 import { toDataURL } from "qrcode";
-import { generateBase32Secret } from "../../utils.js";
-import { User } from "../../interface/user.js";
+import { generateBase32Secret } from "../../utils";
+import { User } from "../../interface/user";
 import { RedisClientType } from "redis";
-import redis from "../../../redis/config.js";
-import scrypt from "../../../scrypt.js";
+import redis from "../../../redis/config";
+import scrypt from "../../../scrypt";
 
 class UserModel {
   redis: RedisClientType;
@@ -27,9 +27,10 @@ class UserModel {
 
     query += ";";
 
+    const mysqlPool = await getMysqlPool();
+
     try {
-      const mysqlConnection = await getConnection();
-      const [users] = await mysqlConnection.query(query, params);
+      const [users] = await mysqlPool.query(query, params);
 
       const roleQuery =
         "SELECT *, BIN_TO_UUID(id) as id FROM roles WHERE id = ?";
@@ -43,7 +44,7 @@ class UserModel {
           created_at,
           root_user,
         }: any) => {
-          const [role] = await mysqlConnection.query(roleQuery, [role_id]);
+          const [role] = await mysqlPool.query(roleQuery, [role_id]);
           return {
             email,
             id,
@@ -75,8 +76,8 @@ class UserModel {
 
   async getById({ id }: { id: string }) {
     try {
-      const mysqlConnection = await getConnection();
-      const [rows] = await mysqlConnection.query(
+      const mysqlPool = await getMysqlPool();
+      const [rows] = await mysqlPool.query(
         "SELECT *, BIN_TO_UUID(id) as id FROM users WHERE id = UUID_TO_BIN(?);",
         [id]
       );
@@ -87,7 +88,7 @@ class UserModel {
 
       const user: User = rows[0];
 
-      const [role] = await mysqlConnection.query(
+      const [role] = await mysqlPool.query(
         "SELECT *, BIN_TO_UUID(id) as id FROM roles WHERE id = ?;",
         [user.role_id]
       );
@@ -120,8 +121,8 @@ class UserModel {
 
     try {
       const hash = await scrypt.hash(password);
-      const mysqlConnection = await getConnection();
-      const [existingUser]: any = await mysqlConnection.query(
+      const mysqlPool = await getMysqlPool();
+      const [existingUser]: any = await mysqlPool.query(
         "SELECT email FROM users WHERE email = ?;",
         [email]
       );
@@ -134,15 +135,15 @@ class UserModel {
         };
       }
 
-      const [uuidResult]: any = await mysqlConnection.query(
+      const [uuidResult]: any = await mysqlPool.query(
         "SELECT UUID() AS uuid;"
       );
       const [{ uuid }] = uuidResult;
-      await mysqlConnection.query(
+      await mysqlPool.query(
         `INSERT INTO users (id, email, password, role_id, root_user) VALUES (UUID_TO_BIN(?), ?, ?, UUID_TO_BIN(?), ?);`,
         [uuid, email, hash, role_id, root_user]
       );
-      const [users]: any = await mysqlConnection.query(
+      const [users]: any = await mysqlPool.query(
         "SELECT *, BIN_TO_UUID(id) as id FROM users WHERE id = UUID_TO_BIN(?);",
         [uuid]
       );
@@ -159,9 +160,9 @@ class UserModel {
 
   async delete({ id }) {
     try {
-      const mysqlConnection = await getConnection();
+      const mysqlPool = await getMysqlPool();
 
-      const [rows] = await mysqlConnection.query(
+      const [rows] = await mysqlPool.query(
         "SELECT root_user FROM users WHERE id = UUID_TO_BIN(?)",
         [id]
       );
@@ -184,7 +185,7 @@ class UserModel {
         };
       }
 
-      await mysqlConnection.query(
+      await mysqlPool.query(
         "DELETE FROM users WHERE id = UUID_TO_BIN(?)",
         [id]
       );
@@ -206,7 +207,7 @@ class UserModel {
 
   async update({ id, input }: any) {
     try {
-      const mysqlConnection = await getConnection();
+      const mysqlPool = await getMysqlPool();
       const updateFields: string[] = [];
       const fieldValues: any[] = [];
 
@@ -232,7 +233,7 @@ class UserModel {
         ", "
       )} WHERE id = UUID_TO_BIN(?);`;
 
-      await mysqlConnection.query(sqlQuery, fieldValues);
+      await mysqlPool.query(sqlQuery, fieldValues);
 
       return { success: true, statusCode: 200, message: "Updated succesful" };
     } catch (error) {
@@ -246,8 +247,8 @@ class UserModel {
   }
 
   async login({ input }: any) {
-    const mysqlConnection = await getConnection();
-    const [userQuery]: any = await mysqlConnection.query(
+    const mysqlPool = await getMysqlPool();
+    const [userQuery]: any = await mysqlPool.query(
       "SELECT *, BIN_TO_UUID(id) as id FROM users WHERE email = ?",
       [input.email]
     );
@@ -283,8 +284,8 @@ class UserModel {
 
   async changePassword({ input, id }: any) {
     try {
-      const mysqlConnection = await getConnection();
-      const [rows] = await mysqlConnection.query(
+      const mysqlPool = await getMysqlPool();
+      const [rows] = await mysqlPool.query(
         "SELECT *, BIN_TO_UUID(id) as id FROM users WHERE id = UUID_TO_BIN(?);",
         [id]
       );
@@ -301,7 +302,7 @@ class UserModel {
         };
       }
       const hash = await scrypt.hash(input.new);
-      await mysqlConnection.query(
+      await mysqlPool.query(
         "UPDATE users SET password = ? WHERE id = UUID_TO_BIN(?);",
         [hash, id]
       );
@@ -379,8 +380,8 @@ class UserModel {
   }
 
   async verify2fa({ id, token_2fa }) {
-    const mysqlConnection = await getConnection();
-    const [rows] = await mysqlConnection.query(
+    const mysqlPool = await getMysqlPool();
+    const [rows] = await mysqlPool.query(
       "SELECT *, BIN_TO_UUID(id) as id FROM users WHERE id = UUID_TO_BIN(?);",
       [id]
     );

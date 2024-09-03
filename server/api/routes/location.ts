@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { LocationController } from "../controllers/LocationController.js";
+import { LocationController } from "../controllers/LocationController";
 
 export const createLocationRouter: ({ model }: any) => Router = ({
   model,

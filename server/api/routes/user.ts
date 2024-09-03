@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { UserController } from "../controllers/UserController.js";
-import { authenticateToken } from "../../middlewares/auth.middleware.js";
+import { UserController } from "../controllers/UserController";
+import { authenticateToken } from "../../middlewares/auth.middleware";
 
 export const createUsersRouter: ({ model }: any) => Router = ({
   model,
@@ -9,7 +9,7 @@ export const createUsersRouter: ({ model }: any) => Router = ({
 
   const userController = new UserController({ model });
 
-  userRouter.get("/", authenticateToken, userController.getAll);
+  userRouter.get("/", userController.getAll);
 
   userRouter.post("/register", authenticateToken, userController.create);
 

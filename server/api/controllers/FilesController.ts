@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { bucket } from "../firebase/config.js";
+import { bucket } from "../firebase/config";
 import { getDownloadURL } from "firebase-admin/storage";
 
 export class FilesController {

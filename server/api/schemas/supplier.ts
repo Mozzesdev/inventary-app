@@ -12,14 +12,20 @@ const fileSchema = z.object({
 const supplierSchema = z.object({
   name: z.string().min(1, { message: "Location name is required" }),
   contact: z.string().min(1, { message: "User is required" }),
-  address: z.string().min(1, { message: "Address is required" }),
-  state: z.string().min(1, { message: "State is required" }),
-  zip: z.string().min(1, { message: "ZIP code is required" }),
-  street: z.string().min(1, { message: "Street is required" }),
+  address: z.string().optional(),
+  state: z.string().optional(),
+  zip: z.string().optional(),
+  street: z.string().optional(),
   phone_number: z
     .string()
-    .length(10, { message: "Phone number must be exactly 10 characters long" }),
-  email: z.string().email({ message: "Invalid email format" }),
+    .length(10, { message: "Phone number must be exactly 10 characters long" })
+    .optional()
+    .or(z.literal("")),
+  email: z
+    .string()
+    .email({ message: "Invalid email format" })
+    .optional()
+    .or(z.literal("")),
   note: z.string().optional(),
   web_page: z.string().optional(),
   files: z.array(fileSchema).min(0).optional(),

@@ -1,5 +1,5 @@
 import cors from "cors";
-import { ACCEPT_ORIGINS } from "../config.js";
+import { ACCEPT_ORIGINS } from "../config";
 
 export const corsMiddleware = ({ acceptOrigins = ACCEPT_ORIGINS } = {}) =>
   cors({

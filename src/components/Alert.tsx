@@ -1,10 +1,11 @@
 import React, { useEffect } from "react";
 import { classNames } from "../../utils/classNames";
 
-interface AlertProps {
+export interface AlertProps {
   message: string;
   severity: "info" | "success" | "warning" | "error";
   timeout: number;
+  inner?: boolean;
   handleDismiss: () => void;
 }
 
@@ -12,6 +13,7 @@ const Alert = ({
   message = "",
   severity = "info",
   timeout = 0,
+  inner = false,
   handleDismiss = () => {},
 }: AlertProps) => {
   const alertStyleType = {
@@ -35,14 +37,18 @@ const Alert = ({
       <div
         className={classNames(
           alertStyleType[severity],
-          "border rounded-lg px-4 py-3 mb-4 shadow-md pointer-events-auto bg-[#161b22]"
+          "border rounded-lg max-w-[400px] px-4 py-3 mb-4 shadow-md pointer-events-auto bg-[#161b22]"
         )}
         role="alert"
       >
         <div className="flex">
           <div>
-            <p className="font-bold capitalize">{severity}</p>
-            <p className="text-sm">{message}</p>
+            <p className="font-bold capitalize">{severity}:</p>
+            {inner ? (
+              <div dangerouslySetInnerHTML={{ __html: message }} />
+            ) : (
+              <p className="text-sm text-wrap">{message}</p>
+            )}
           </div>
           <div className="ml-auto">
             {handleDismiss && (

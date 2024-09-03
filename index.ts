@@ -13,38 +13,35 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const root = __dirname;
 
-export default (await startServer()) as unknown;
+const app = express();
 
-async function startServer() {
-  const app = express();
+app.disable("x-powered-by");
+app.use(corsMiddleware());
+app.use(cookieParser());
 
-  app.disable("x-powered-by");
-  app.use(corsMiddleware());
-  app.use(cookieParser());
-
-  if (process.env.NODE_ENV === "production") {
-    app.use(express.static(`${root}/dist/client`));
-  } else {
-    const vite = await import("vite");
-    const viteDevMiddleware = (
-      await vite.createServer({
-        root,
-        server: { middlewareMode: true },
-      })
-    ).middlewares;
-    app.use(viteDevMiddleware);
-  }
-
-  app.use("/api", apiRouter);
-  app.all("*", userMiddleware, renderMiddleware);
-
-  process.on("SIGINT", async () => {
-    await redis.quit();
-    process.exit();
-  });
-
-  app.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}`);
-  });
-  return app;
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(`${root}/dist/client`));
+} else {
+  const vite = await import("vite");
+  const viteDevMiddleware = (
+    await vite.createServer({
+      root,
+      server: { middlewareMode: true },
+    })
+  ).middlewares;
+  app.use(viteDevMiddleware);
 }
+
+app.use("/api", apiRouter);
+app.all("*", userMiddleware, renderMiddleware);
+
+process.on("SIGINT", async () => {
+  await redis.quit();
+  process.exit();
+});
+
+app.listen(PORT, () => {
+  console.log(`Server running at http://localhost:${PORT}`);
+});
+
+export default app;

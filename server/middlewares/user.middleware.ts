@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { JSW_KEY } from "../config.js";
+import { JSW_KEY } from "../config";
 import { NextFunction, Response } from "express";
 
 export const userMiddleware = (

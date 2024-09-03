@@ -24,9 +24,12 @@ export class RolesController {
     const validated = validateRole(req.body);
 
     if (!validated.success)
-      return res
-        .status(400)
-        .json({ error: JSON.parse(validated.error.message) });
+      return res.status(400).json({
+        error: validated.error.errors.map((err) => ({
+          path: err.path.join("."),
+          message: err.message,
+        })),
+      });
 
     const { statusCode, ...result } = await this.model.create({
       input: validated.data,
@@ -52,9 +55,12 @@ export class RolesController {
     const validated = validatePartialRole(req.body);
 
     if (!validated.success)
-      return res
-        .status(400)
-        .json({ error: JSON.parse(validated.error.message) });
+      return res.status(400).json({
+        error: validated.error.errors.map((err) => ({
+          path: err.path.join("."),
+          message: err.message,
+        })),
+      });
 
     const { id } = req.params;
 

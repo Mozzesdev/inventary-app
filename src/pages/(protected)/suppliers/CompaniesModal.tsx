@@ -12,6 +12,7 @@ import {
 import Spinner from "../../../components/Spinner";
 import { uploadFile } from "../../../services/files.services";
 import React from "react";
+import { addAlert } from "../../../services/alerts.services";
 
 const CompaniesModal = ({ companyModal, closeModal, fetchData, data }: any) => {
   const handleSubmit = async (
@@ -29,8 +30,17 @@ const CompaniesModal = ({ companyModal, closeModal, fetchData, data }: any) => {
       resetForm();
       closeModal();
       fetchData();
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      const message = `<ul class="pl-5 list-disc">${error.response.data.error
+        .map(({ message }) => `<li>${message}</li>`)
+        .join("")}</ul>`;
+
+      addAlert({
+        severity: "error",
+        message,
+        timeout: 5,
+        inner: true,
+      });
     } finally {
       setSubmitting(false);
     }
@@ -70,15 +80,13 @@ const CompaniesModal = ({ companyModal, closeModal, fetchData, data }: any) => {
         onSubmit={handleSubmit}
         validationSchema={Yup.object({
           name: Yup.string().required("Required"),
-          address: Yup.string().required("Required"),
-          email: Yup.string()
-            .email("Invalid email address")
-            .required("Required"),
+          address: Yup.string(),
+          email: Yup.string().email("Invalid email address"),
           contact: Yup.string().required("Required"),
-          phone_number: Yup.string().required("Required"),
-          state: Yup.string().required("Required"),
-          street: Yup.string().required("Required"),
-          zip: Yup.string().required("Required"),
+          phone_number: Yup.string(),
+          state: Yup.string(),
+          street: Yup.string(),
+          zip: Yup.string(),
           web_page: Yup.string(),
           note: Yup.string(),
         })}
@@ -103,7 +111,7 @@ const CompaniesModal = ({ companyModal, closeModal, fetchData, data }: any) => {
                   containerClassName="!my-0"
                 />
                 <Input
-                  label="Contact"
+                  label="Contact person"
                   placeholder="Enter the contact name..."
                   type="text"
                   name="contact"
@@ -115,6 +123,7 @@ const CompaniesModal = ({ companyModal, closeModal, fetchData, data }: any) => {
                   name="address"
                   type="text"
                   containerClassName="!my-0"
+                  required={false}
                   id="address"
                   placeholder="Enter the address..."
                 />
@@ -122,6 +131,7 @@ const CompaniesModal = ({ companyModal, closeModal, fetchData, data }: any) => {
                   label="Street"
                   placeholder="Enter the street name..."
                   containerClassName="!my-0"
+                  required={false}
                   id="street"
                   type="text"
                   name="street"
@@ -131,14 +141,16 @@ const CompaniesModal = ({ companyModal, closeModal, fetchData, data }: any) => {
                   placeholder="Enter the Zip Code..."
                   containerClassName="!my-0"
                   type="text"
+                  required={false}
                   name="zip"
                   id="zip"
                 />
                 <Input
-                  label="State"
-                  placeholder="Enter the state name..."
+                  label="City"
+                  placeholder="Enter the city name..."
                   type="text"
                   containerClassName="!my-0"
+                  required={false}
                   name="state"
                   id="state"
                 />
@@ -147,6 +159,7 @@ const CompaniesModal = ({ companyModal, closeModal, fetchData, data }: any) => {
                   containerClassName="!my-0"
                   type="email"
                   placeholder="Enter the manager email..."
+                  required={false}
                   id="email"
                   name="email"
                 />
@@ -156,6 +169,7 @@ const CompaniesModal = ({ companyModal, closeModal, fetchData, data }: any) => {
                   containerClassName="!my-0"
                   type="text"
                   placeholder="Enter the phone number..."
+                  required={false}
                   name="phone_number"
                 />
                 <Input
@@ -163,6 +177,7 @@ const CompaniesModal = ({ companyModal, closeModal, fetchData, data }: any) => {
                   containerClassName="!my-0"
                   type="text"
                   placeholder="Enter the manager email..."
+                  required={false}
                   id="web_page"
                   name="web_page"
                 />
@@ -177,27 +192,27 @@ const CompaniesModal = ({ companyModal, closeModal, fetchData, data }: any) => {
                 placeholder="Write some notes here..."
               />
               {!data.id ? (
-              <>
-                <label
-                  className="block mb-2 text-sm font-medium text-left text-neutral-400"
-                  htmlFor="files"
-                >
-                  Upload multiple files
-                </label>
-                <input
-                  className="max-w-52 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-                  id="files"
-                  type="file"
-                  name="files"
-                  multiple
-                  onChange={async (e) =>
-                    await setFieldValue("files", e.currentTarget.files)
-                  }
-                />
-              </>
-            ) : (
-              ""
-            )}
+                <>
+                  <label
+                    className="block mb-2 text-sm font-medium text-left text-neutral-400"
+                    htmlFor="files"
+                  >
+                    Upload multiple files
+                  </label>
+                  <input
+                    className="max-w-52 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                    id="files"
+                    type="file"
+                    name="files"
+                    multiple
+                    onChange={async (e) =>
+                      await setFieldValue("files", e.currentTarget.files)
+                    }
+                  />
+                </>
+              ) : (
+                ""
+              )}
               <div className="flex gap-3 mt-4 justify-center">
                 <Button className="py-1 px-4" submit disabled={isSubmitting}>
                   {data.id ? "Edit" : "Create"}

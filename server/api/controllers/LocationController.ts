@@ -3,7 +3,7 @@ import {
   validateLocation,
   validateLocationFiles,
   validatePartialLocation,
-} from "../schemas/location.js";
+} from "../schemas/location";
 
 export class LocationController {
   model: any;
@@ -28,9 +28,12 @@ export class LocationController {
     const validated = validateLocation(req.body);
 
     if (!validated.success)
-      return res
-        .status(400)
-        .json({ error: JSON.parse(validated.error.message) });
+      return res.status(400).json({
+        error: validated.error.errors.map((err) => ({
+          path: err.path.join("."),
+          message: err.message,
+        })),
+      });
 
     const { statusCode, ...result } = await this.model.create({
       input: validated.data,
@@ -56,9 +59,12 @@ export class LocationController {
     const validated = validatePartialLocation(req.body);
 
     if (!validated.success)
-      return res
-        .status(400)
-        .json({ error: JSON.parse(validated.error.message) });
+      return res.status(400).json({
+        error: validated.error.errors.map((err) => ({
+          path: err.path.join("."),
+          message: err.message,
+        })),
+      });
 
     const { id } = req.params;
 
@@ -74,9 +80,12 @@ export class LocationController {
     const validated = validateLocationFiles(req.body);
 
     if (!validated.success)
-      return res
-        .status(400)
-        .json({ error: JSON.parse(validated.error.message) });
+      return res.status(400).json({
+        error: validated.error.errors.map((err) => ({
+          path: err.path.join("."),
+          message: err.message,
+        })),
+      });
 
     const { statusCode, ...result } = await this.model.addFiles({
       input: validated.data,

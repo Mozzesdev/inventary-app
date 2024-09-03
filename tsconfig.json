@@ -13,20 +13,17 @@
     "noImplicitAny": false,
     "moduleResolution": "Bundler",
     "target": "ES2022",
-    "lib": [
-      "DOM",
-      "DOM.Iterable",
-      "ESNext"
-    ],
+    "lib": ["DOM", "DOM.Iterable", "ES2020"],
     "types": [
       "vite/client",
       "vike-react",
-      "vite-plugin-vercel/types"
+      "vite-plugin-vercel/types",
+      "jest",
+      "node",
+      "axios-mock-adapter/types"
     ],
     "jsx": "preserve",
     "jsxImportSource": "react"
   },
-  "exclude": [
-    "dist"
-  ]
+  "exclude": ["dist", "node_modules"],
 }

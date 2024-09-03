@@ -1,5 +1,5 @@
 import { RowDataPacket, FieldPacket } from "mysql2";
-import getConnection from "../db/mysql.js";
+import getMysqlPool from "../db/mysql";
 
 export interface Pagination {
   page: number;
@@ -65,7 +65,7 @@ class CrudModel {
             .join("")
         : ""
     } FROM ${this.table}`;
-    const mysqlConnection = await getConnection();
+    const mysqlPool = await getMysqlPool();
 
     let likeClauses = "";
     if (query) {
@@ -81,7 +81,7 @@ class CrudModel {
 
     try {
       const [records]: [RowDataPacket[], FieldPacket[]] =
-        await mysqlConnection.query(sqlQuery, params);
+        await mysqlPool.query(sqlQuery, params);
 
       if (records?.length) {
         if (this.references?.length) {
@@ -91,7 +91,7 @@ class CrudModel {
               .filter((id: any) => id !== null);
 
             const refIdsBin = refIds.map((uuid: string) =>
-              mysqlConnection.format("UUID_TO_BIN(?)", [uuid])
+              mysqlPool.format("UUID_TO_BIN(?)", [uuid])
             );
 
             if (refIds.length > 0) {
@@ -99,7 +99,7 @@ class CrudModel {
                 ref.table
               } WHERE id IN (${refIdsBin.join(", ")});`;
               const [refRecords]: [RowDataPacket[], FieldPacket[]] =
-                await mysqlConnection.query(refQuery);
+                await mysqlPool.query(refQuery);
 
               const refMap = refRecords.reduce((acc: any, refRecord: any) => {
                 acc[refRecord.id] = refRecord;
@@ -126,7 +126,7 @@ class CrudModel {
             .join(", ")})
           `;
           const [fileRecords]: [RowDataPacket[], FieldPacket[]] =
-            await mysqlConnection.query(fileQuery, ids);
+            await mysqlPool.query(fileQuery, ids);
 
           const filesMap = fileRecords.reduce((acc: any, file: any) => {
             const tableId = file[`${this.table}_id`];
@@ -151,7 +151,7 @@ class CrudModel {
         : [];
 
       const [[{ count }]]: [RowDataPacket[], FieldPacket[]] =
-        await mysqlConnection.query(countQuery, countParams);
+        await mysqlPool.query(countQuery, countParams);
 
       const pagination: Pagination = {
         page,
@@ -184,10 +184,10 @@ class CrudModel {
               .join("")
           : ""
       } FROM ${this.table} WHERE id = UUID_TO_BIN(?);`;
-      const mysqlConnection = await getConnection();
+      const mysqlPool = await getMysqlPool();
 
       const [[record]]: [RowDataPacket[], FieldPacket[]] =
-        await mysqlConnection.query(sqlQuery, [id]);
+        await mysqlPool.query(sqlQuery, [id]);
 
       if (!record) {
         return { success: false, message: "Record not found" };
@@ -202,7 +202,7 @@ class CrudModel {
           if (refId) {
             const refQuery = `SELECT BIN_TO_UUID(id) as id, name FROM ${ref.table} WHERE id = UUID_TO_BIN(?);`;
             const [[refRecord]]: [RowDataPacket[], FieldPacket[]] =
-              await mysqlConnection.query(refQuery, [refId]);
+              await mysqlPool.query(refQuery, [refId]);
 
             const fieldName = ref.field.includes("id")
               ? ref.field.replace("_id", "")
@@ -216,7 +216,7 @@ class CrudModel {
 
       if (this.withFiles) {
         const [fileRecords]: [RowDataPacket[], FieldPacket[]] =
-          await mysqlConnection.query(
+          await mysqlPool.query(
             `SELECT *, BIN_TO_UUID(id) as id, BIN_TO_UUID(${this.table}_id) as ${this.table}_id FROM ${this.table}_files WHERE ${this.table}_id = UUID_TO_BIN(?);`,
             [id]
           );
@@ -236,9 +236,9 @@ class CrudModel {
 
   async create({ input }: { input: Record<string, any> }) {
     try {
-      const mysqlConnection = await getConnection();
+      const mysqlPool = await getMysqlPool();
 
-      const [existingData]: any = await mysqlConnection.query(
+      const [existingData]: any = await mysqlPool.query(
         `SELECT * FROM ${this.table} WHERE ${this.id} = ?;`,
         [input[this.id as string]]
       );
@@ -269,18 +269,18 @@ class CrudModel {
       const finalValues = Object.values(values);
 
       const [uuidResult]: [RowDataPacket[], FieldPacket[]] =
-        await mysqlConnection.query("SELECT UUID() AS uuid;");
+        await mysqlPool.query("SELECT UUID() AS uuid;");
 
       const [{ uuid }] = uuidResult as [{ uuid: string }];
 
-      await mysqlConnection.query(
+      await mysqlPool.query(
         `INSERT INTO ${this.table} (id, ${fields}) VALUES (UUID_TO_BIN(?), ${placeholders});`,
         [uuid, ...finalValues]
       );
 
       if (files?.length && this.withFiles) {
         const fileInserts = files.map((file: Record<string, any>) => {
-          return mysqlConnection.query(
+          return mysqlPool.query(
             `INSERT INTO ${this.table}_files (id, ${this.table}_id, name, url, size, created_at, type) VALUES (UUID_TO_BIN(UUID()), UUID_TO_BIN(?), ?, ?, ?, ?, ?);`,
             [uuid, file.name, file.url, file.size, file.created_at, file.type]
           );
@@ -301,16 +301,16 @@ class CrudModel {
 
   async delete({ id }: { id: string }) {
     try {
-      const mysqlConnection = await getConnection();
+      const mysqlPool = await getMysqlPool();
 
       if (this.withFiles) {
-        await mysqlConnection.query(
+        await mysqlPool.query(
           `DELETE FROM ${this.table}_files WHERE ${this.table}_id = UUID_TO_BIN(?);`,
           [id]
         );
       }
 
-      await mysqlConnection.query(
+      await mysqlPool.query(
         `DELETE FROM ${this.table} WHERE id = UUID_TO_BIN(?);`,
         [id]
       );
@@ -332,7 +332,7 @@ class CrudModel {
 
   async update({ id, input }: { id: string; input: Record<string, any> }) {
     try {
-      const mysqlConnection = await getConnection();
+      const mysqlPool = await getMysqlPool();
 
       const updateFields = Object.keys(input)
         .map((key) =>
@@ -341,13 +341,13 @@ class CrudModel {
         .join(", ");
       const values = Object.values(input);
 
-      await mysqlConnection.query(
+      await mysqlPool.query(
         `UPDATE ${this.table} SET ${updateFields} WHERE id = UUID_TO_BIN(?);`,
         [...values, id]
       );
 
       const [[records]]: [RowDataPacket[], FieldPacket[]] =
-        await mysqlConnection.query(
+        await mysqlPool.query(
           `SELECT *, BIN_TO_UUID(id) as id FROM ${this.table} WHERE id = UUID_TO_BIN(?);`,
           [id]
         );
@@ -371,9 +371,9 @@ class CrudModel {
         statusCode: 400,
       };
     try {
-      const mysqlConnection = await getConnection();
+      const mysqlPool = await getMysqlPool();
 
-      await mysqlConnection.query(
+      await mysqlPool.query(
         `DELETE FROM ${this.table}_files WHERE id = UUID_TO_BIN(?);`,
         [id]
       );
@@ -403,11 +403,11 @@ class CrudModel {
     }
 
     try {
-      const mysqlConnection = await getConnection();
+      const mysqlPool = await getMysqlPool();
 
       if (input?.length) {
         const fileInserts = input.map((file: Record<string, any>) => {
-          return mysqlConnection.query(
+          return mysqlPool.query(
             `INSERT INTO ${this.table}_files (id, ${this.table}_id, name, url, size, created_at, type) VALUES (UUID_TO_BIN(UUID()), UUID_TO_BIN(?), ?, ?, ?, ?, ?);`,
             [
               file[`${this.table}_id`],

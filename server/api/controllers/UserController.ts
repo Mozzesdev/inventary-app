@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
-import { Model } from "../interface/model.js";
+import { Model } from "../interface/model";
 import {
   validateLogin,
   validatePartialUser,
   validatePasswordChange,
   validateUser,
-} from "../schemas/user.js";
-import { NODE_ENV } from "../../config.js";
+} from "../schemas/user";
+import { NODE_ENV } from "../../config";
 
 export class UserController {
   model: Model | any;
@@ -32,9 +32,12 @@ export class UserController {
     const validated = validateUser(req.body);
 
     if (!validated.success)
-      return res
-        .status(400)
-        .json({ error: JSON.parse(validated.error.message) });
+      return res.status(400).json({
+        error: validated.error.errors.map((err) => ({
+          path: err.path.join("."),
+          message: err.message,
+        })),
+      });
 
     const { statusCode, ...result } = await this.model.create({
       input: validated.data,
@@ -60,9 +63,12 @@ export class UserController {
     const validated = validatePartialUser(req.body);
 
     if (!validated.success)
-      return res
-        .status(400)
-        .json({ error: JSON.parse(validated.error.message) });
+      return res.status(400).json({
+        error: validated.error.errors.map((err) => ({
+          path: err.path.join("."),
+          message: err.message,
+        })),
+      });
 
     const { id } = req.params;
 
@@ -78,9 +84,12 @@ export class UserController {
     const validated = validateLogin(req.body);
 
     if (!validated.success)
-      return res
-        .status(400)
-        .json({ error: JSON.parse(validated.error.message) });
+      return res.status(400).json({
+        error: validated.error.errors.map((err) => ({
+          path: err.path.join("."),
+          message: err.message,
+        })),
+      });
 
     const {
       status,
@@ -157,9 +166,12 @@ export class UserController {
     const validated = validatePasswordChange(req.body);
 
     if (!validated.success)
-      return res
-        .status(400)
-        .json({ error: JSON.parse(validated.error.message) });
+      return res.status(400).json({
+        error: validated.error.errors.map((err) => ({
+          path: err.path.join("."),
+          message: err.message,
+        })),
+      });
 
     const { id } = req.params;
 

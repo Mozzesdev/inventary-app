@@ -1,13 +1,13 @@
 import mysql, { Pool } from "mysql2/promise";
-import { MYSQL_CONFIG } from "../../config.js";
+import { MYSQL_CONFIG } from "../../config";
 
-let connection: Pool | null = null;
+let mysqlPool: Pool | null = null;
 
-async function getConnection() {
-  if (!connection) {
-    connection = mysql.createPool(JSON.parse(MYSQL_CONFIG!));
+async function getMysqlPool() {
+  if (!mysqlPool) {
+    mysqlPool = mysql.createPool(JSON.parse(MYSQL_CONFIG!));
   }
-  return connection;
+  return mysqlPool;
 }
 
-export default getConnection;
+export default getMysqlPool;

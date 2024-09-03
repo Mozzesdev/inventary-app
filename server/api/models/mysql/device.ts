@@ -1,9 +1,9 @@
 import { FieldPacket, RowDataPacket } from "mysql2";
-import getConnection from "../../db/mysql.js";
+import getMysqlPool from "../../db/mysql";
 import CrudModel, {
   Pagination,
   QueryOptions,
-} from "../../interface/CrudModel.js";
+} from "../../interface/CrudModel";
 
 class DeviceModel extends CrudModel {
   constructor() {
@@ -62,7 +62,7 @@ class DeviceModel extends CrudModel {
             .join("")
         : ""
     } FROM ${this.table}`;
-    const mysqlConnection = await getConnection();
+    const mysqlPool = await getMysqlPool();
 
     let whereClauses = ` WHERE maintenance_date IS NOT NULL`;
     let likeClauses = "";
@@ -81,7 +81,7 @@ class DeviceModel extends CrudModel {
 
     try {
       const [records]: [RowDataPacket[], FieldPacket[]] =
-        await mysqlConnection.query(sqlQuery, params);
+        await mysqlPool.query(sqlQuery, params);
 
       if (records?.length) {
         if (this.references?.length) {
@@ -91,7 +91,7 @@ class DeviceModel extends CrudModel {
               .filter((id: any) => id !== null);
 
             const refIdsBin = refIds.map((uuid: string) =>
-              mysqlConnection.format("UUID_TO_BIN(?)", [uuid])
+              mysqlPool.format("UUID_TO_BIN(?)", [uuid])
             );
 
             if (refIds.length > 0) {
@@ -99,7 +99,7 @@ class DeviceModel extends CrudModel {
                 ref.table
               } WHERE id IN (${refIdsBin.join(", ")});`;
               const [refRecords]: [RowDataPacket[], FieldPacket[]] =
-                await mysqlConnection.query(refQuery);
+                await mysqlPool.query(refQuery);
 
               const refMap = refRecords.reduce((acc: any, refRecord: any) => {
                 acc[refRecord.id] = refRecord;
@@ -127,7 +127,7 @@ class DeviceModel extends CrudModel {
             .join(", ")})
           `;
           const [fileRecords]: [RowDataPacket[], FieldPacket[]] =
-            await mysqlConnection.query(fileQuery, ids);
+            await mysqlPool.query(fileQuery, ids);
 
           const filesMap = fileRecords.reduce((acc: any, file: any) => {
             const tableId = file[`${this.table}_id`];
@@ -152,7 +152,7 @@ class DeviceModel extends CrudModel {
         : [];
 
       const [[{ count }]]: [RowDataPacket[], FieldPacket[]] =
-        await mysqlConnection.query(countQuery, countParams);
+        await mysqlPool.query(countQuery, countParams);
 
       const pagination: Pagination = {
         page,

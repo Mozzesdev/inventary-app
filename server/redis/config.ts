@@ -1,11 +1,11 @@
 import { createClient } from "redis";
-import { REDIS_PASSWORD } from "../config.js";
+import { REDIS_PASSWORD } from "../config";
 
 const redis = await createClient({
   password: REDIS_PASSWORD,
   socket: {
-    host: "redis-10075.c328.europe-west3-1.gce.redns.redis-cloud.com",
-    port: 10075,
+    host: "redis-12279.c339.eu-west-3-1.ec2.redns.redis-cloud.com",
+    port: 12279,
   },
 })
   .on("connect", () => {

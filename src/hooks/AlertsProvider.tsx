@@ -48,10 +48,11 @@ const AlertsProvider = ({ children }: { children: ReactNode }) => {
 
 export default AlertsProvider;
 
-type Alert = {
+export type Alert = {
   id?: string;
   severity: "info" | "success" | "warning" | "error";
   message: string;
   timeout: number;
+  inner?: boolean;
   handleDismiss?: () => void;
 };

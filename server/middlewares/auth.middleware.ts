@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import { JSW_KEY } from "../config.js";
+import { JSW_KEY } from "../config";
 
 interface CustomRequest extends Request {
   user?: string | JwtPayload;

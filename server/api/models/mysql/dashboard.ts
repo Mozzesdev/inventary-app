@@ -1,19 +1,19 @@
-import getConnection from "../../db/mysql.js";
-import { Device } from "../../interface/device.js";
+import getMysqlPool from "../../db/mysql";
+import { Device } from "../../interface/device";
 
 export default class DashboardModel {
   static async getDevices() {
     const query = `SELECT *, BIN_TO_UUID(id) as id, BIN_TO_UUID(supplier_id) as supplier_id FROM device WHERE expiration_date IS NOT NULL ORDER BY expiration_date ASC LIMIT 10;`;
 
     try {
-      const mysqlConnection = await getConnection();
-      const [rows] = await mysqlConnection.query(query);
+      const mysqlPool = await getMysqlPool();
+      const [rows] = await mysqlPool.query(query);
 
       const devices: any[] = await Promise.all(
         (rows as Device[]).map(async (device: Device) => {
           if (device.supplier_id) {
             const supplierQuery = `SELECT BIN_TO_UUID(id) as id, name FROM supplier WHERE id = UUID_TO_BIN(?);`;
-            const [supplierRows] = await mysqlConnection.query(supplierQuery, [
+            const [supplierRows] = await mysqlPool.query(supplierQuery, [
               device.supplier_id,
             ]);
             const supplier: any = (supplierRows as any[])[0];
@@ -54,14 +54,14 @@ export default class DashboardModel {
     const suppliersQuery = "SELECT COUNT(*) as supplier_count FROM supplier;";
 
     try {
-      const mysqlConnection = await getConnection();
+      const mysqlPool = await getMysqlPool();
 
       const [mainDevicesRows, locationsRows, devicesRows, suppliersRows] =
         await Promise.all([
-          mysqlConnection.query(mainDevicesQuery),
-          mysqlConnection.query(locationsQuery),
-          mysqlConnection.query(devicesQuery),
-          mysqlConnection.query(suppliersQuery),
+          mysqlPool.query(mainDevicesQuery),
+          mysqlPool.query(locationsQuery),
+          mysqlPool.query(devicesQuery),
+          mysqlPool.query(suppliersQuery),
         ]);
 
       const mainDevicesCount = mainDevicesRows[0][0].main_devices_count;

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { DashboardController } from "../controllers/DashboardController.js";
+import { DashboardController } from "../controllers/DashboardController";
 
 export const createDashboardRouter: ({ model }: any) => Router = ({
   model,

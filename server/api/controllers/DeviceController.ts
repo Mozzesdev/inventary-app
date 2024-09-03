@@ -3,7 +3,7 @@ import {
   validateDevice,
   validateDeviceFiles,
   validatePartialDevice,
-} from "../schemas/devices.js";
+} from "../schemas/devices";
 
 export class DeviceController {
   model: any;
@@ -21,9 +21,12 @@ export class DeviceController {
     const validated = validateDevice(req.body);
 
     if (!validated.success)
-      return res
-        .status(400)
-        .json({ error: JSON.parse(validated.error.message) });
+      return res.status(400).json({
+        error: validated.error.errors.map((err) => ({
+          path: err.path.join("."),
+          message: err.message,
+        })),
+      });
 
     const { statusCode, ...result } = await this.model.create({
       input: validated.data,
@@ -49,9 +52,12 @@ export class DeviceController {
     const validated = validatePartialDevice(req.body);
 
     if (!validated.success)
-      return res
-        .status(400)
-        .json({ error: JSON.parse(validated.error.message) });
+      return res.status(400).json({
+        error: validated.error.errors.map((err) => ({
+          path: err.path.join("."),
+          message: err.message,
+        })),
+      });
 
     const { id } = req.params;
 
@@ -81,9 +87,12 @@ export class DeviceController {
     const validated = validateDeviceFiles(req.body);
 
     if (!validated.success)
-      return res
-        .status(400)
-        .json({ error: JSON.parse(validated.error.message) });
+      return res.status(400).json({
+        error: validated.error.errors.map((err) => ({
+          path: err.path.join("."),
+          message: err.message,
+        })),
+      });
 
     const { statusCode, ...result } = await this.model.addFiles({
       input: validated.data,

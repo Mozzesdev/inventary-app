@@ -4,7 +4,6 @@ import axios, {
   InternalAxiosRequestConfig,
 } from "axios";
 import { navigate } from "vike/client/router";
-import { addAlert } from "./services/alerts.services";
 
 const axiosInstance = axios.create({
   baseURL: "/api",
@@ -20,6 +19,7 @@ axiosInstance.interceptors.request.use(
     return config;
   },
   (error: AxiosError) => {
+    console.log("axios "+error);
     return Promise.reject(error);
   }
 );

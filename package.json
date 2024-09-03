@@ -9,7 +9,8 @@
     "dev": "node --env-file=.env.development --import=tsx ./index.ts",
     "build": "vite build",
     "preview": "node --env-file=.env.production --import=tsx ./index.ts",
-    "lint": "eslint . --max-warnings 0"
+    "lint": "eslint . --max-warnings 0",
+    "test": "node  --experimental-vm-modules node_modules/jest/bin/jest.js"
   },
   "dependencies": {
     "@heroicons/react": "^2.1.4",
@@ -36,6 +37,7 @@
     "sirv": "^2.0.3",
     "tsx": "^4.15.7",
     "vike": "^0.4.178",
+    "vike-plugin": "file:",
     "vike-react": "^0.4.16",
     "vite": "^5.3.3",
     "vite-plugin-vercel": "^7.0.2",
@@ -47,6 +49,7 @@
     "@types/cookie-parser": "^1.4.7",
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
+    "@types/jest": "^29.5.12",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/morgan": "^1.9.9",
     "@types/multer": "^1.4.11",
@@ -57,10 +60,17 @@
     "@typescript-eslint/eslint-plugin": "^6.13.2",
     "@typescript-eslint/parser": "^6.13.2",
     "autoprefixer": "^10.4.19",
+    "axios-mock-adapter": "^2.0.0",
+    "dotenv": "^16.4.5",
     "eslint": "^8.55.0",
     "eslint-plugin-react": "^7.33.2",
+    "jest": "^29.7.0",
     "postcss": "^8.4.38",
+    "supertest": "^7.0.0",
     "tailwindcss": "^3.4.4",
+    "ts-jest": "^29.2.5",
+    "ts-jest-mock-import-meta": "^1.2.0",
+    "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   }
 }
