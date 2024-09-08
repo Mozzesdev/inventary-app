@@ -137,7 +137,7 @@ const LocationModal = ({ locationModal, closeModal, fetchData, data }: any) => {
                 id="zip"
               />
               <Input
-                label="State"
+                label="City"
                 placeholder="Enter the state name..."
                 type="text"
                 containerClassName="!my-0"
