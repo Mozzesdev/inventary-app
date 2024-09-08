@@ -4,7 +4,7 @@ import getMysqlPool from "../api/db/mysql";
 
 jest.mock("../api/db/mysql");
 
-describe("API Tests", () => {
+describe("API Tests: ", () => {
   const mockUsers = [
     {
       id: "1",
