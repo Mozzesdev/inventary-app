@@ -4,9 +4,13 @@ import { UserConfig } from "vite";
 import vercel from "vite-plugin-vercel";
 
 export default {
-  plugins: [vike(), react(), vercel({
-    source: "/.*",
-  })],
+  plugins: [
+    vike(),
+    react(),
+    vercel({
+      source: "/.*",
+    }),
+  ],
   build: {
     target: "es2022",
   },
