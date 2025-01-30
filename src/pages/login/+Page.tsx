@@ -64,7 +64,7 @@ const Page = () => {
         hide={() => setTwoFactor(false)}
         user={user}
       />
-      <div className="h-full max-w-xs mx-auto text-center relative">
+      <div className="h-full max-w-xs mx-auto text-center relative flex flex-col items-center justify-center pb-20">
         {isSubmitting ? (
           <div className="fixed inset-0 flex items-center justify-center z-10 bg-[#0000004b]">
             <Spinner />
@@ -72,8 +72,8 @@ const Page = () => {
         ) : (
           ""
         )}
-        <img src={logo} alt="logo" className="w-12 h-auto block mx-auto py-8" />
-        <h1 className="block text-2xl mb-3 font-inter">Sign in to Inventary</h1>
+        <img src={logo} alt="logo" className="w-12 h-auto block mx-auto py-4" />
+        <h1 className="block text-2xl font-inter">Sign in to inventary</h1>
         <Formik
           onSubmit={handleLogin}
           initialValues={initialValues}
@@ -108,9 +108,6 @@ const Page = () => {
             </Form>
           )}
         </Formik>
-        <footer className="mt-[80px] text-xs text-[#8d96a0]">
-          <p>© 2024 Inventary app. All rights reserved.</p>
-        </footer>
       </div>
     </>
   );

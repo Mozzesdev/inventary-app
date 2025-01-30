@@ -1,5 +1,6 @@
 import { usePageContext } from "vike-react/usePageContext";
 import React from "react";
+import logo from "../../assets/logo.png";
 
 export default function Page() {
   const { is404 } = usePageContext();
@@ -8,6 +9,7 @@ export default function Page() {
     <main className="grid place-items-center w-full text-center font-inter-bold">
       {is404 ? (
         <article>
+        <img src={logo} alt="logo" className="w-12 h-auto block mx-auto py-4" />
           <h1>404 Page Not Found</h1>
           <p>This page could not be found.</p>
         </article>
