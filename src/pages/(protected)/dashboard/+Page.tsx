@@ -112,7 +112,7 @@ const Page = () => {
   }, [getAllData]);
 
   return (
-    <section className="px-10 max-sm:px-4 max-w-[1504px] relative">
+    <section className="px-10 max-sm:px-4 max-w-[1504px] relative mx-auto">
       <div className="grid grid-cols-4 gap-3 max-lg:grid-cols-3 max-md:grid-cols-2">
         <article className="border-[#30363d] border rounded-md p-4">
           <div className="flex justify-between items-center mb-4 text-[#aab5c1]">

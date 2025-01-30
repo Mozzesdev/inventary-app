@@ -4,8 +4,8 @@ import { REDIS_PASSWORD } from "../config";
 const redis = await createClient({
   password: REDIS_PASSWORD,
   socket: {
-    host: "redis-12279.c339.eu-west-3-1.ec2.redns.redis-cloud.com",
-    port: 12279,
+    host: "redis-14817.c83.us-east-1-2.ec2.redns.redis-cloud.com",
+    port: 14817,
   },
 })
   .on("connect", () => {
@@ -13,6 +13,7 @@ const redis = await createClient({
   })
   .on("error", async (err) => {
     console.log("Redis Client Error", err);
+    process.exit();
   })
   .connect();
 

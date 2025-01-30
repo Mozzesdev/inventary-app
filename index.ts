@@ -8,6 +8,7 @@ import renderMiddleware from "./server/middlewares/render.middleware.js";
 import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import apiRouter from "./server/api/router.js";
+import { createDevMiddleware } from "vike/server";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -22,14 +23,8 @@ app.use(cookieParser());
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(`${root}/dist/client`));
 } else {
-  const vite = await import("vite");
-  const viteDevMiddleware = (
-    await vite.createServer({
-      root,
-      server: { middlewareMode: true },
-    })
-  ).middlewares;
-  app.use(viteDevMiddleware);
+  const { devMiddleware } = await createDevMiddleware({ root });
+  app.use(devMiddleware);
 }
 
 app.use("/api", apiRouter);
