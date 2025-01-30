@@ -9,7 +9,7 @@ export default {
     },
   },
   prerender: false,
-  title: "Inventary app",
+  title: "AH Medical - Inventory Management",
   extends: [vikeReact],
 } satisfies Config;
 

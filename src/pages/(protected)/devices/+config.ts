@@ -1,6 +1,6 @@
 import type { Config } from "vike/types";
 
 export default {
-  title: "Devices | Inventary",
+  title: "Devices | Inventory Management",
   location_label: "Devices",
 } satisfies Config;
