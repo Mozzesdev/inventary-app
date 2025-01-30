@@ -7,12 +7,15 @@ export default {
   plugins: [vike(), react(), vercel({
     source: "/.*",
   })],
+  build: {
+    target: "es2022",
+  },
   vercel: {
     additionalEndpoints: [
       {
         source: "index.ts",
         destination: "ssr_",
-        addRoute: false,
+        route: false,
       },
     ],
   },
